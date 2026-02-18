@@ -510,3 +510,39 @@ body{
   .grid{ grid-template-columns: 1fr; }
   .topbar{ flex-direction:column; align-items:flex-start; gap:12px; }
 }
+.auth-buttons{
+  display:flex;
+  gap:8px;
+  margin:14px 0;
+}
+
+.auth-buttons button{
+  padding:8px 14px;
+  border-radius:12px;
+  border:1px solid rgba(148,163,184,.4);
+  background:rgba(255,255,255,.8);
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.auth-buttons button:hover{
+  transform:translateY(-1px);
+  background:#ffffff;
+}
+
+/* ألوان مميزة لكل زر */
+#btnSignup{
+  background:#e0f2fe;
+  border-color:#93c5fd;
+}
+
+#btnLogin{
+  background:#e9fce7;
+  border-color:#86efac;
+}
+
+#btnLogout{
+  background:#fee2e2;
+  border-color:#fca5a5;
+}
