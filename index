@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planova - Dashboard</title>
+
+  <!-- Icons (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand__logo">
+          <i class="fa-solid fa-droplet"></i>
+        </div>
+        <div class="brand__name">planova</div>
+      </div>
+
+      <nav class="nav">
+        <a class="nav__item active" href="#dashboard">
+          <span class="nav__icon"><i class="fa-regular fa-compass"></i></span>
+          <span class="nav__text">Dashboard</span>
+        </a>
+        <a class="nav__item" href="#tasks">
+          <span class="nav__icon"><i class="fa-regular fa-square-check"></i></span>
+          <span class="nav__text">Tasks</span>
+        </a>
+        <a class="nav__item" href="#exams">
+          <span class="nav__icon"><i class="fa-regular fa-calendar"></i></span>
+          <span class="nav__text">Exams</span>
+        </a>
+        <a class="nav__item" href="#study-plan">
+          <span class="nav__icon"><i class="fa-regular fa-clipboard"></i></span>
+          <span class="nav__text">Study Plan</span>
+        </a>
+        <a class="nav__item" href="#performance">
+          <span class="nav__icon"><i class="fa-solid fa-chart-line"></i></span>
+          <span class="nav__text">Performance</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="user">
+          <div class="user__avatar"></div>
+          <div class="user__meta">
+            <div class="user__name">Sarah Ahmed</div>
+            <div class="user__role">Student</div>
+          </div>
+          <button class="icon-btn" title="More">
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <div class="topbar__title">Tise, Fds. 1; <span class="muted">21:49</span></div>
+        </div>
+
+        <div class="topbar__right">
+          <button class="icon-btn" title="Upload"><i class="fa-regular fa-folder-open"></i></button>
+          <button class="icon-btn" title="Messages"><i class="fa-regular fa-envelope"></i></button>
+          <div class="topbar__avatar" title="Profile"></div>
+          <button class="icon-btn" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <!-- CONTENT GRID -->
+      <section class="grid" id="dashboard">
+
+        <!-- HERO CARD -->
+        <div class="card hero">
+          <div class="hero__content">
+            <div class="hero__greet">Good Evening,</div>
+            <div class="hero__name">Sarah</div>
+            <div class="hero__desc">Let's boost your academic potential!</div>
+
+            <div class="hero__actions">
+              <button class="pill">
+                <i class="fa-regular fa-circle-check"></i>
+                <span>Check my tasks</span>
+                <i class="fa-solid fa-angle-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="hero__ring">
+            <div class="ring">
+              <div class="ring__number">12</div>
+              <div class="ring__label">Tasks Due<br/>This Week</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT ACTIONS -->
+        <div class="stack">
+          <div class="card action action--ghost">
+            <div class="action__left">
+              <div class="action__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+              <div class="action__text">
+                <div class="action__title">Analyze Workload</div>
+                <div class="action__sub">AI quick analysis</div>
+              </div>
+            </div>
+            <button class="mini-btn"><i class="fa-solid fa-wave-square"></i></button>
+          </div>
+
+          <div class="card action">
+            <div class="action__left">
+              <div class="action__icon action__icon--blue"><i class="fa-solid fa-bolt"></i></div>
+              <div class="action__text">
+                <div class="action__title">Generate Smart Suggestions</div>
+                <div class="action__sub">Personalized tips</div>
+              </div>
+            </div>
+            <button class="mini-btn"><i class="fa-solid fa-angle-right"></i></button>
+          </div>
+
+          <div class="card duo">
+            <button class="duo__btn">
+              <span class="duo__ico"><i class="fa-solid fa-chart-pie"></i></span>
+              <span>Planova Workload</span>
+            </button>
+            <button class="duo__btn">
+              <span class="duo__ico"><i class="fa-solid fa-lightbulb"></i></span>
+              <span>Generate Suggestions</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PENDING TASKS -->
+        <div class="card" id="tasks">
+          <div class="card__head">
+            <div class="card__title">Pending Tasks</div>
+            <button class="icon-btn" title="Menu"><i class="fa-solid fa-grip"></i></button>
+          </div>
+
+          <div class="task">
+            <div class="task__top">
+              <div>
+                <div class="task__name">CS Project Report</div>
+                <div class="task__meta">Due 26, 2024</div>
+              </div>
+              <div class="badge badge--warn">50%</div>
+            </div>
+            <div class="progress">
+              <div class="progress__bar" data-width="50%"></div>
+            </div>
+          </div>
+
+          <div class="task">
+            <div class="task__top">
+              <div>
+                <div class="task__name">Math Homework</div>
+                <div class="task__meta">Due Jan 24, 2024</div>
+              </div>
+              <div class="badge badge--danger">HIGH</div>
+            </div>
+            <div class="progress">
+              <div class="progress__bar" data-width="25%"></div>
+            </div>
+          </div>
+
+          <div class="task">
+            <div class="task__top">
+              <div>
+                <div class="task__name">Schedule Exams</div>
+                <div class="task__meta">Due Jan 24, 2024</div>
+              </div>
+              <button class="chev"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+            <div class="progress">
+              <div class="progress__bar" data-width="15%"></div>
+            </div>
+          </div>
+
+          <button class="new-task">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Task</span>
+          </button>
+        </div>
+
+        <!-- UPCOMING EXAMS -->
+        <div class="card" id="exams">
+          <div class="card__head">
+            <div class="card__title">Upcoming Exams</div>
+            <button class="icon-btn" title="Menu"><i class="fa-solid fa-grip"></i></button>
+          </div>
+
+          <a class="exam" href="#">
+            <div class="exam__dot"></div>
+            <div class="exam__body">
+              <div class="exam__name">Software Engineering</div>
+              <div class="exam__meta">Due: 28, 2024</div>
+            </div>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+
+          <a class="exam" href="#">
+            <div class="exam__dot exam__dot--soft"></div>
+            <div class="exam__body">
+              <div class="exam__name">Calculus II</div>
+              <div class="exam__meta">Feb 01, 2024</div>
+            </div>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+        </div>
+
+        <!-- STUDY PLAN SMALL -->
+        <div class="card" id="study-plan">
+          <div class="card__head">
+            <div class="card__title">Study Plan</div>
+            <button class="icon-btn" title="Add"><i class="fa-regular fa-square-plus"></i></button>
+          </div>
+
+          <div class="plan__date">Tuesday, Jan 23, 2024</div>
+          <div class="plan__note">Review Chapter 3, Practice math problems</div>
+
+          <button class="plan__btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Update Study Plan</span>
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div class="card performance" id="performance">
+          <div class="card__head">
+            <div class="card__title">Study Plan</div>
+            <button class="icon-btn" title="Add"><i class="fa-regular fa-square-plus"></i></button>
+          </div>
+
+          <div class="chart">
+            <svg viewBox="0 0 340 160" aria-label="Chart">
+              <path class="chart__grid" d="M10 130 H330 M10 95 H330 M10 60 H330 M10 25 H330" />
+              <polyline class="chart__line" points="20,115 70,110 120,90 170,85 220,70 270,55 320,45" />
+              <polyline class="chart__area" points="20,115 70,110 120,90 170,85 220,70 270,55 320,45 320,140 20,140" />
+              <circle class="chart__dot" cx="320" cy="45" r="5" />
+            </svg>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat__label">Average Grade:</div>
+              <div class="stat__value">87<span class="stat__unit">%</span></div>
+            </div>
+
+            <div class="stat stat--row">
+              <div class="stat__label">Progress:</div>
+              <div class="stat__pill">+5% <span class="muted">last month</span></div>
+            </div>
+
+            <div class="stat">
+              <div class="stat__label">Task Completion:</div>
+              <div class="stat__value">72<span class="stat__unit">%</span></div>
+            </div>
+
+            <div class="progress progress--thin">
+              <div class="progress__bar" data-width="72%"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
