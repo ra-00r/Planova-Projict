@@ -27,14 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       item.classList.add('active');
     });
   });
-
-  // Buttons demo
-  const newTask = document.querySelector('.new-task');
-  if (newTask) {
-    newTask.addEventListener('click', () => {
-      alert('Add New Task (Demo)');
-    });
-  }
+  
 });
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
