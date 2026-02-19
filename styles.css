@@ -546,3 +546,8 @@ body{
   background:#fee2e2;
   border-color:#fca5a5;
 }
+.topbar__right{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}

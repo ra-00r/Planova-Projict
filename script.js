@@ -140,3 +140,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (title) await addTask(title, deadline || null);
   });
 });
+// عناصر الواجهة
+const userEmail = document.getElementById("userEmail");
+const heroName = document.querySelector(".hero__name");
+const btnSignup = document.getElementById("btnSignup");
+const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
+
+// تحديث الواجهة حسب حالة المستخدم
+async function updateUI() {
+  const user = await getCurrentUser();
+
+  if (user) {
+    if (userEmail) userEmail.textContent = user.email;
+    if (heroName) heroName.textContent = user.email;
+
+    if (btnSignup) btnSignup.style.display = "none";
+    if (btnLogin) btnLogin.style.display = "none";
+    if (btnLogout) btnLogout.style.display = "inline-block";
+  } else {
+    if (userEmail) userEmail.textContent = "";
+    if (heroName) heroName.textContent = "Guest";
+
+    if (btnSignup) btnSignup.style.display = "inline-block";
+    if (btnLogin) btnLogin.style.display = "inline-block";
+    if (btnLogout) btnLogout.style.display = "none";
+  }
+}
+
+// يتحدث تلقائي عند تغير الحالة
+supabaseClient.auth.onAuthStateChange(() => {
+  updateUI();
+});
+
+updateUI();
