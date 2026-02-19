@@ -88,7 +88,7 @@ async function updateAuthUI() {
 }
 
   await loadAllForCurrentPage();
-  
+
 
 async function doSignup() {
   const fullName = ($("signupName")?.value || "").trim();
@@ -102,7 +102,7 @@ async function doSignup() {
     password: pass,
     options: {
       data: { full_name: fullName },
-      emailRedirectTo: window.location.href
+      emailRedirectTo: "https://ra-00r.github.io/Planova-Projict/"
     }
   });
 
