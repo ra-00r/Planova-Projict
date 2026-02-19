@@ -41,10 +41,21 @@ const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function signUp(email, password) {
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+async function signUp(email, password, fullName) {
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName
+      }
+    }
+  });
+
   if (error) return alert("Signup error: " + error.message);
-  alert("Signed up! Now login.");
+
+  alert("Account created! Please check your email to confirm.");
   return data;
 }
 
@@ -119,10 +130,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadTasks();
 
   document.getElementById("btnSignup")?.addEventListener("click", async () => {
-    const email = prompt("Email:");
-    const password = prompt("Password:");
-    if (email && password) await signUp(email, password);
-  });
+
+  const fullName = prompt("Enter your full name:");
+  const email = prompt("Email:");
+  const password = prompt("Password:");
+
+  if (fullName && email && password) {
+    await signUp(email, password, fullName);
+  }
+
+});
 
   document.getElementById("btnLogin")?.addEventListener("click", async () => {
     const email = prompt("Email:");
@@ -143,24 +160,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 // عناصر الواجهة
 const userEmail = document.getElementById("userEmail");
 const heroName = document.querySelector(".hero__name");
+const sidebarName = document.getElementById("sidebarName");
 const btnSignup = document.getElementById("btnSignup");
 const btnLogin = document.getElementById("btnLogin");
 const btnLogout = document.getElementById("btnLogout");
 
-// تحديث الواجهة حسب حالة المستخدم
+// تحديث الواجهة
 async function updateUI() {
   const user = await getCurrentUser();
 
   if (user) {
+    const displayName =
+      user?.user_metadata?.full_name ||
+      user.email.split("@")[0];
+
     if (userEmail) userEmail.textContent = user.email;
-    if (heroName) heroName.textContent = user.email;
+    if (heroName) heroName.textContent = displayName;
+    if (sidebarName) sidebarName.textContent = displayName;
 
     if (btnSignup) btnSignup.style.display = "none";
     if (btnLogin) btnLogin.style.display = "none";
     if (btnLogout) btnLogout.style.display = "inline-block";
+
   } else {
     if (userEmail) userEmail.textContent = "";
     if (heroName) heroName.textContent = "Guest";
+    if (sidebarName) sidebarName.textContent = "Guest";
 
     if (btnSignup) btnSignup.style.display = "inline-block";
     if (btnLogin) btnLogin.style.display = "inline-block";
@@ -168,7 +193,7 @@ async function updateUI() {
   }
 }
 
-// يتحدث تلقائي عند تغير الحالة
+// يتحدث تلقائي عند تغير حالة المستخدم
 supabaseClient.auth.onAuthStateChange(() => {
   updateUI();
 });
