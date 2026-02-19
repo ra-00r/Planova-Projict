@@ -559,3 +559,206 @@ body{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* ===== Modal (Planova style) ===== */
+.modal { display: none; position: fixed; inset: 0; z-index: 9999; }
+.modal.is-open { display: block; }
+
+.modal__overlay {
+  position: absolute; inset: 0;
+  background: rgba(10, 16, 28, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.modal__box {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+  padding: 16px;
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.modal__title { margin: 0; font-size: 18px; }
+
+.modal__body { display: grid; gap: 12px; padding: 6px 2px 14px; }
+
+.field { display: grid; gap: 6px; }
+.field__label { font-size: 12px; opacity: 0.7; }
+
+.field__input {
+  width: 100%;
+  padding: 12px 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  background: #f7f8fb;
+  outline: none;
+}
+
+.field__input:focus {
+  border-color: rgba(76, 127, 255, 0.35);
+  box-shadow: 0 0 0 4px rgba(76, 127, 255, 0.12);
+  background: #fff;
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn--primary {
+  background: #2f6bff;
+  color: #fff;
+}
+
+.btn--ghost {
+  background: rgba(0,0,0,0.06);
+}
+/* ===== Topbar auth area ===== */
+.topbar__right{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.user-email{
+  font-weight:700;
+  opacity:.85;
+  max-width:220px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.auth-buttons{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.auth-buttons button{
+  padding:8px 12px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,0.08);
+  background:rgba(255,255,255,0.8);
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.auth-buttons button:hover{
+  transform: translateY(-1px);
+  background:#fff;
+}
+
+/* ===== Modal (Planova style) ===== */
+.modal{ display:none; position:fixed; inset:0; z-index:9999; }
+.modal.is-open{ display:block; }
+
+.modal__overlay{
+  position:absolute; inset:0;
+  background: rgba(10, 16, 28, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.modal__box{
+  position:absolute;
+  left:50%; top:50%;
+  transform: translate(-50%, -50%);
+  width:min(520px, calc(100vw - 32px));
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 18px 60px rgba(0,0,0,0.18);
+  padding:16px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+
+.modal__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.modal__title{ margin:0; font-size:18px; font-weight:800; }
+
+.modal__body{ display:grid; gap:12px; padding: 6px 2px 14px; }
+
+.field{ display:grid; gap:6px; }
+.field__label{ font-size:12px; opacity:.7; font-weight:700; }
+
+.field__input{
+  width:100%;
+  padding:12px 12px;
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:12px;
+  background:#f7f8fb;
+  outline:none;
+  font-family: inherit;
+}
+
+.field__input:focus{
+  border-color: rgba(76, 127, 255, 0.35);
+  box-shadow: 0 0 0 4px rgba(76, 127, 255, 0.12);
+  background:#fff;
+}
+
+.modal__actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.btn--primary{ background:#2f6bff; color:#fff; }
+.btn--ghost{ background: rgba(0,0,0,0.06); }
+
+/* ===== Dynamic list items ===== */
+.list-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  padding:10px 0;
+}
+
+.list-item__meta{
+  opacity:.75;
+  font-size:12px;
+}
+
+.small-btn{
+  border:1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  border-radius:10px;
+  padding:6px 10px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.small-btn.danger{ background:#fee2e2; }
+.small-btn.success{ background:#dcfce7; }

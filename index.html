@@ -5,245 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planova - Dashboard</title>
 
-  <!-- Icons (optional) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
 
+<body>
   <div class="app">
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand__logo">
-          <i class="fa-solid fa-droplet"></i>
+        <div class="brand__logo">P</div>
+        <div class="brand__text">
+          <div class="brand__name">Planova</div>
+          <div class="brand__tag">Academic Dashboard</div>
         </div>
-        <div class="brand__name">planova</div>
       </div>
 
       <nav class="nav">
-        <a class="nav__item active" href="#dashboard">
-          <span class="nav__icon"><i class="fa-regular fa-compass"></i></span>
-          <span class="nav__text">Dashboard</span>
-        </a>
-        <a class="nav__item" href="#tasks">
-          <span class="nav__icon"><i class="fa-regular fa-square-check"></i></span>
-          <span class="nav__text">Tasks</span>
-        </a>
-        <a class="nav__item" href="#exams">
-          <span class="nav__icon"><i class="fa-regular fa-calendar"></i></span>
-          <span class="nav__text">Exams</span>
-        </a>
-        <a class="nav__item" href="#study-plan">
-          <span class="nav__icon"><i class="fa-regular fa-clipboard"></i></span>
-          <span class="nav__text">Study Plan</span>
-        </a>
-        <a class="nav__item" href="#performance">
-          <span class="nav__icon"><i class="fa-solid fa-chart-line"></i></span>
-          <span class="nav__text">Performance</span>
-        </a>
+        <a class="nav__item is-active" href="#dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a class="nav__item" href="#tasks"><i class="fa-solid fa-list-check"></i><span>Tasks</span></a>
+        <a class="nav__item" href="#exams"><i class="fa-solid fa-file-circle-check"></i><span>Exams</span></a>
+        <a class="nav__item" href="#study-plan"><i class="fa-solid fa-calendar-check"></i><span>Study Plan</span></a>
+        <a class="nav__item" href="#performance"><i class="fa-solid fa-chart-line"></i><span>Performance</span></a>
+        <a class="nav__item" href="#notifications"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
       </nav>
 
       <div class="sidebar__footer">
         <div class="user">
           <div class="user__avatar"></div>
           <div class="user__meta">
-            <div class="user__name" id="sidebarName">Sarah Ahmed</div>
+            <div class="user__name" id="sidebarName">Guest</div>
             <div class="user__role">Student</div>
           </div>
-          <button class="icon-btn" title="More">
-            <i class="fa-solid fa-ellipsis"></i>
-          </button>
+          <button class="icon-btn" title="More"><i class="fa-solid fa-ellipsis"></i></button>
         </div>
       </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="main">
+    <main class="main" id="dashboard">
       <!-- TOPBAR -->
       <header class="topbar">
         <div class="topbar__left">
-          <div class="topbar__title">Tise, Fds. 1; <span class="muted">21:49</span></div>
+          <div class="topbar__title">Planova Dashboard</div>
         </div>
 
         <div class="topbar__right">
+          <span id="userEmail" class="user-email"></span>
 
-  <span id="userEmail" class="user-email"></span>
+          <div class="auth-buttons">
+            <button id="btnSignup" type="button">Sign Up</button>
+            <button id="btnLogin" type="button">Login</button>
+            <button id="btnLogout" type="button">Logout</button>
+          </div>
 
-  <div class="auth-buttons">
-    <button id="btnSignup">Sign Up</button>
-    <button id="btnLogin">Login</button>
-    <button id="btnLogout">Logout</button>
-  </div>
-
-  <button class="icon-btn" title="Upload">
-    <i class="fa-regular fa-folder-open"></i>
-  </button>
-
-  <button class="icon-btn" title="Messages">
-    <i class="fa-regular fa-envelope"></i>
-  </button>
-
-  <div class="topbar__avatar" title="Profile"></div>
-
-</div>
+          <button class="icon-btn" title="Upload"><i class="fa-regular fa-folder-open"></i></button>
+          <button class="icon-btn" title="Messages"><i class="fa-regular fa-envelope"></i></button>
+          <div class="topbar__avatar" title="Profile"></div>
+        </div>
       </header>
 
-      <!-- CONTENT GRID -->
-      <section class="grid" id="dashboard">
-
-        <!-- HERO CARD -->
-        <div class="card hero">
-          <div class="hero__content">
-            <div class="hero__greet">Good Evening,</div>
-            <div class="hero__name">Sarah</div>
-            <div class="hero__desc">Let's boost your academic potential!</div>
-
-            <div class="hero__actions">
-              <button class="pill">
-                <i class="fa-regular fa-circle-check"></i>
-                <span>Check my tasks</span>
-                <i class="fa-solid fa-angle-right"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="hero__ring">
-            <div class="ring">
-              <div class="ring__number">12</div>
-              <div class="ring__label">Tasks Due<br/>This Week</div>
-            </div>
-          </div>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero__left">
+          <div class="hero__greet">Good Evening</div>
+          <div class="hero__name">Guest</div>
+          <div class="hero__sub">Manage tasks, exams, and plans in one place.</div>
         </div>
 
-        <!-- RIGHT ACTIONS -->
-        <div class="stack">
-          <div class="card action action--ghost">
-            <div class="action__left">
-              <div class="action__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-              <div class="action__text">
-                <div class="action__title">Analyze Workload</div>
-                <div class="action__sub">AI quick analysis</div>
-              </div>
-            </div>
-            <button class="mini-btn"><i class="fa-solid fa-wave-square"></i></button>
-          </div>
-
-          <div class="card action">
-            <div class="action__left">
-              <div class="action__icon action__icon--blue"><i class="fa-solid fa-bolt"></i></div>
-              <div class="action__text">
-                <div class="action__title">Generate Smart Suggestions</div>
-                <div class="action__sub">Personalized tips</div>
-              </div>
-            </div>
-            <button class="mini-btn"><i class="fa-solid fa-angle-right"></i></button>
-          </div>
-
-          <div class="card duo">
-            <button class="duo__btn">
-              <span class="duo__ico"><i class="fa-solid fa-chart-pie"></i></span>
-              <span>Planova Workload</span>
-            </button>
-            <button class="duo__btn">
-              <span class="duo__ico"><i class="fa-solid fa-lightbulb"></i></span>
-              <span>Generate Suggestions</span>
-            </button>
-          </div>
+        <div class="hero__right">
+          <button class="hero__btn" id="btnSmartPlan" type="button">
+            <span class="hero__btn-icon"><i class="fa-solid fa-lightbulb"></i></span>
+            <span>Generate Suggestions</span>
+          </button>
         </div>
+      </section>
 
-        <!-- PENDING TASKS -->
+      <!-- GRID -->
+      <section class="grid">
+
+        <!-- TASKS -->
         <div class="card" id="tasks">
           <div class="card__head">
             <div class="card__title">Pending Tasks</div>
-            <button class="icon-btn" title="Menu"><i class="fa-solid fa-grip"></i></button>
+            <button class="icon-btn" title="Menu"><i class="fa-solid fa-ellipsis"></i></button>
           </div>
 
-          <div class="task">
-            <div class="task__top">
-              <div>
-                <div class="task__name">CS Project Report</div>
-                <div class="task__meta">Due 26, 2024</div>
-              </div>
-              <div class="badge badge--warn">50%</div>
-            </div>
-            <div class="progress">
-              <div class="progress__bar" data-width="50%"></div>
-            </div>
-          </div>
+          <div id="tasksContainer"></div>
 
-          <div class="task">
-            <div class="task__top">
-              <div>
-                <div class="task__name">Math Homework</div>
-                <div class="task__meta">Due Jan 24, 2024</div>
-              </div>
-              <div class="badge badge--danger">HIGH</div>
-            </div>
-            <div class="progress">
-              <div class="progress__bar" data-width="25%"></div>
-            </div>
-          </div>
+          <button class="new-task" id="btnAddTask" type="button">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Task</span>
+          </button>
+        </div>
 
-          <div class="task">
-            <div class="task__top">
-              <div>
-                <div class="task__name">Schedule Exams</div>
-                <div class="task__meta">Due Jan 24, 2024</div>
-              </div>
-              <button class="chev"><i class="fa-solid fa-angle-right"></i></button>
-            </div>
-            <div class="progress">
-              <div class="progress__bar" data-width="15%"></div>
-            </div>
-          </div>
-
-<div id="tasksContainer"></div>
-
-<button class="new-task" id="btnAddTask">
-  <i class="fa-solid fa-plus"></i>
-  <span>New Task</span>
-</button>
-</div>
-
-        <!-- UPCOMING EXAMS -->
+        <!-- EXAMS -->
         <div class="card" id="exams">
           <div class="card__head">
             <div class="card__title">Upcoming Exams</div>
             <button class="icon-btn" title="Menu"><i class="fa-solid fa-grip"></i></button>
           </div>
 
-          <a class="exam" href="#">
-            <div class="exam__dot"></div>
-            <div class="exam__body">
-              <div class="exam__name">Software Engineering</div>
-              <div class="exam__meta">Due: 28, 2024</div>
-            </div>
-            <i class="fa-solid fa-angle-right"></i>
-          </a>
+          <div id="examsContainer"></div>
 
-          <a class="exam" href="#">
-            <div class="exam__dot exam__dot--soft"></div>
-            <div class="exam__body">
-              <div class="exam__name">Calculus II</div>
-              <div class="exam__meta">Feb 01, 2024</div>
-            </div>
-            <i class="fa-solid fa-angle-right"></i>
-          </a>
+          <button class="new-task" id="btnAddExam" type="button">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Exam</span>
+          </button>
         </div>
 
-        <!-- STUDY PLAN SMALL -->
+        <!-- STUDY PLAN -->
         <div class="card" id="study-plan">
           <div class="card__head">
             <div class="card__title">Study Plan</div>
-            <button class="icon-btn" title="Add"><i class="fa-regular fa-square-plus"></i></button>
+            <button class="icon-btn" title="Edit"><i class="fa-regular fa-pen-to-square"></i></button>
           </div>
 
-          <div class="plan__date">Tuesday, Jan 23, 2024</div>
-          <div class="plan__note">Review Chapter 3, Practice math problems</div>
+          <div id="studyPlanContainer"></div>
 
-          <button class="plan__btn">
+          <button class="plan__btn" id="btnEditPlan" type="button">
             <i class="fa-solid fa-pen-to-square"></i>
             <span>Update Study Plan</span>
             <i class="fa-solid fa-angle-right"></i>
@@ -253,46 +133,214 @@
         <!-- PERFORMANCE -->
         <div class="card performance" id="performance">
           <div class="card__head">
-            <div class="card__title">Study Plan</div>
-            <button class="icon-btn" title="Add"><i class="fa-regular fa-square-plus"></i></button>
+            <div class="card__title">Performance</div>
+            <button class="icon-btn" title="Menu"><i class="fa-solid fa-ellipsis"></i></button>
           </div>
 
-          <div class="chart">
-            <svg viewBox="0 0 340 160" aria-label="Chart">
-              <path class="chart__grid" d="M10 130 H330 M10 95 H330 M10 60 H330 M10 25 H330" />
-              <polyline class="chart__line" points="20,115 70,110 120,90 170,85 220,70 270,55 320,45" />
-              <polyline class="chart__area" points="20,115 70,110 120,90 170,85 220,70 270,55 320,45 320,140 20,140" />
-              <circle class="chart__dot" cx="320" cy="45" r="5" />
-            </svg>
-          </div>
+          <div id="performanceContainer"></div>
 
-          <div class="stats">
-            <div class="stat">
-              <div class="stat__label">Average Grade:</div>
-              <div class="stat__value">87<span class="stat__unit">%</span></div>
-            </div>
-
-            <div class="stat stat--row">
-              <div class="stat__label">Progress:</div>
-              <div class="stat__pill">+5% <span class="muted">last month</span></div>
-            </div>
-
-            <div class="stat">
-              <div class="stat__label">Task Completion:</div>
-              <div class="stat__value">72<span class="stat__unit">%</span></div>
-            </div>
-
-            <div class="progress progress--thin">
-              <div class="progress__bar" data-width="72%"></div>
-            </div>
-          </div>
+          <button class="plan__btn" id="btnUpdateGrade" type="button">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Update Average Grade</span>
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
         </div>
-         </section> <!-- end grid -->
-    </main> <!-- end main -->
-  </div> <!-- end app -->
 
+        <!-- NOTIFICATIONS -->
+        <div class="card" id="notifications">
+          <div class="card__head">
+            <div class="card__title">Notifications</div>
+            <button class="icon-btn" title="Menu"><i class="fa-solid fa-ellipsis"></i></button>
+          </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+          <div id="notificationsContainer"></div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- ============ MODALS ============ -->
+
+  <!-- SIGNUP MODAL -->
+  <div class="modal" id="signupModal">
+    <div class="modal__overlay" data-close="signupModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Create account</h3>
+        <button class="icon-btn" type="button" data-close="signupModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Full Name</span>
+          <input class="field__input" id="signupName" type="text" placeholder="e.g. Raghad Hezemy" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input class="field__input" id="signupEmail" type="email" placeholder="name@email.com" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input class="field__input" id="signupPassword" type="password" placeholder="••••••••" />
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="signupModal">Cancel</button>
+        <button class="btn btn--primary" id="signupSubmit" type="button">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="loginModal">
+    <div class="modal__overlay" data-close="loginModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Login</h3>
+        <button class="icon-btn" type="button" data-close="loginModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input class="field__input" id="loginEmail" type="email" placeholder="name@email.com" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Password</span>
+          <input class="field__input" id="loginPassword" type="password" placeholder="••••••••" />
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="loginModal">Cancel</button>
+        <button class="btn btn--primary" id="loginSubmit" type="button">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK MODAL -->
+  <div class="modal" id="taskModal">
+    <div class="modal__overlay" data-close="taskModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Add New Task</h3>
+        <button class="icon-btn" type="button" data-close="taskModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Title</span>
+          <input class="field__input" id="taskTitle" type="text" placeholder="e.g. Finish Chapter 3" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Deadline</span>
+          <input class="field__input" id="taskDeadline" type="date" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Progress (%)</span>
+          <input class="field__input" id="taskProgress" type="number" min="0" max="100" value="0" />
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="taskModal">Cancel</button>
+        <button class="btn btn--primary" id="taskSave" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAM MODAL -->
+  <div class="modal" id="examModal">
+    <div class="modal__overlay" data-close="examModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Add New Exam</h3>
+        <button class="icon-btn" type="button" data-close="examModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Subject</span>
+          <input class="field__input" id="examSubject" type="text" placeholder="e.g. Software Engineering" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Exam Date</span>
+          <input class="field__input" id="examDate" type="date" />
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="examModal">Cancel</button>
+        <button class="btn btn--primary" id="examSave" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY PLAN MODAL -->
+  <div class="modal" id="planModal">
+    <div class="modal__overlay" data-close="planModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Update Study Plan</h3>
+        <button class="icon-btn" type="button" data-close="planModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Start Date</span>
+          <input class="field__input" id="planStart" type="date" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">End Date</span>
+          <input class="field__input" id="planEnd" type="date" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Plan Details</span>
+          <textarea class="field__input" id="planDetails" rows="5" placeholder="Write your study plan..."></textarea>
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="planModal">Cancel</button>
+        <button class="btn btn--primary" id="planSave" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRADE MODAL -->
+  <div class="modal" id="gradeModal">
+    <div class="modal__overlay" data-close="gradeModal"></div>
+    <div class="modal__box">
+      <div class="modal__head">
+        <h3 class="modal__title">Update Average Grade</h3>
+        <button class="icon-btn" type="button" data-close="gradeModal">✕</button>
+      </div>
+
+      <div class="modal__body">
+        <label class="field">
+          <span class="field__label">Average Grade</span>
+          <input class="field__input" id="gradeValue" type="number" step="0.1" placeholder="e.g. 92.5" />
+        </label>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" type="button" data-close="gradeModal">Cancel</button>
+        <button class="btn btn--primary" id="gradeSave" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
 </body>
 </html>
