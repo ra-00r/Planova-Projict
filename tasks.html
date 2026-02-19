@@ -127,6 +127,64 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<!-- AUTH MODALS (paste before </body>) -->
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal" aria-hidden="true">
+  <div class="modal__backdrop" onclick="closeModal('loginModal')"></div>
+  <div class="modal__card">
+    <div class="modal__head">
+      <h3>Login</h3>
+      <button class="icon-btn" onclick="closeModal('loginModal')">✕</button>
+    </div>
+
+    <label class="field">
+      <span>Email</span>
+      <input id="loginEmail" type="email" placeholder="you@example.com" />
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <input id="loginPassword" type="password" placeholder="••••••••" />
+    </label>
+
+    <div class="modal__actions">
+      <button class="secondary-btn" onclick="closeModal('loginModal')">Cancel</button>
+      <button class="primary-btn" id="loginSubmit">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="modal" id="signupModal" aria-hidden="true">
+  <div class="modal__backdrop" onclick="closeModal('signupModal')"></div>
+  <div class="modal__card">
+    <div class="modal__head">
+      <h3>Sign Up</h3>
+      <button class="icon-btn" onclick="closeModal('signupModal')">✕</button>
+    </div>
+
+    <label class="field">
+      <span>Full name</span>
+      <input id="signupName" type="text" placeholder="Your name" />
+    </label>
+
+    <label class="field">
+      <span>Email</span>
+      <input id="signupEmail" type="email" placeholder="you@example.com" />
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <input id="signupPassword" type="password" placeholder="••••••••" />
+    </label>
+
+    <div class="modal__actions">
+      <button class="secondary-btn" onclick="closeModal('signupModal')">Cancel</button>
+      <button class="primary-btn" id="signupSubmit">Create account</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

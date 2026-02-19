@@ -54,28 +54,41 @@ function todayISO() {
 async function updateAuthUI() {
   const user = await getUser();
 
-  if (isEl("userName")) $("userName").textContent = user ? displayName(user) : "";
-  if (isEl("sidebarName")) $("sidebarName").textContent = user ? displayName(user) : "Guest";
+  const btnLogin = $("btnLogin");
+  const btnSignup = $("btnSignup");
+  const btnLogout = $("btnLogout");
 
-  if (isEl("btnLogin")) $("btnLogin").style.display = user ? "none" : "inline-flex";
-  if (isEl("btnSignup")) $("btnSignup").style.display = user ? "none" : "inline-flex";
-  if (isEl("btnLogout")) $("btnLogout").style.display = user ? "inline-flex" : "none";
+  // أماكن عرض الاسم (إذا موجودة في الصفحة)
+  const userNameEl = $("userName");
+  const userEmailEl = $("userEmail");
+  const sidebarNameEl = $("sidebarName"); // اختياري لو ضفتيه في الـ HTML
 
   if (!user) {
-    // clear containers
-    ["tasksContainer","examsContainer","studyPlanContainer","performanceContainer","notificationsContainer",
-     "dashboardTasks","dashboardExams","dashboardPlan","dashboardPerformance","dashboardNotifications"
-    ].forEach(id => { if (isEl(id)) $(id).innerHTML = ""; });
+    if (btnLogin) btnLogin.style.display = "";
+    if (btnSignup) btnSignup.style.display = "";
+    if (btnLogout) btnLogout.style.display = "none";
 
-    if (isEl("statTasks")) $("statTasks").textContent = "0";
-    if (isEl("statExams")) $("statExams").textContent = "0";
-    if (isEl("statCompletion")) $("statCompletion").textContent = "0%";
-    if (isEl("completionBar")) $("completionBar").style.width = "0%";
+    if (userNameEl) userNameEl.textContent = "Guest";
+    if (userEmailEl) userEmailEl.textContent = "";
+    if (sidebarNameEl) sidebarNameEl.textContent = "Guest";
     return;
   }
 
-  await loadAllForCurrentPage();
+  const fullName =
+    user.user_metadata?.full_name ||
+    (user.email ? user.email.split("@")[0] : "User");
+
+  if (btnLogin) btnLogin.style.display = "none";
+  if (btnSignup) btnSignup.style.display = "none";
+  if (btnLogout) btnLogout.style.display = "";
+
+  if (userNameEl) userNameEl.textContent = fullName;
+  if (userEmailEl) userEmailEl.textContent = user.email || "";
+  if (sidebarNameEl) sidebarNameEl.textContent = fullName;
 }
+
+  await loadAllForCurrentPage();
+  
 
 async function doSignup() {
   const fullName = ($("signupName")?.value || "").trim();
