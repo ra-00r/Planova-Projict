@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planova - Study Plan</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <h2 class="logo">Planova</h2>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="tasks.html">Tasks</a>
+      <a href="exams.html">Exams</a>
+      <a href="study-plan.html" class="active">Study Plan</a>
+      <a href="performance.html">Performance</a>
+      <a href="notifications.html">Notifications</a>
+    </nav>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+
+    <header class="topbar">
+      <h1>Study Plan</h1>
+
+      <div class="auth-area">
+        <span id="userName"></span>
+        <button id="btnLogin">Login</button>
+        <button id="btnSignup">Sign Up</button>
+        <button id="btnLogout">Logout</button>
+      </div>
+    </header>
+
+    <!-- ===== Study Plan Section ===== -->
+    <section class="card">
+
+      <div class="card-header">
+        <h3>Your Study Plan</h3>
+        <div>
+          <button id="btnSmartPlan" class="secondary-btn">Smart Plan</button>
+          <button id="btnEditPlan" class="primary-btn">Edit Plan</button>
+        </div>
+      </div>
+
+      <div id="studyPlanContainer"></div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ===== Study Plan Modal ===== -->
+<div class="modal" id="planModal">
+  <div class="modal-content">
+
+    <h3>Edit Study Plan</h3>
+
+    <label>Start Date</label>
+    <input type="date" id="planStart">
+
+    <label>End Date</label>
+    <input type="date" id="planEnd">
+
+    <label>Plan Details</label>
+    <textarea id="planDetails" rows="5" placeholder="Write your study schedule..."></textarea>
+
+    <div class="modal-actions">
+      <button id="closePlanModal" class="secondary-btn">Cancel</button>
+      <button id="savePlan" class="primary-btn">Save</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== Login Modal ===== -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h3>Login</h3>
+
+    <label>Email</label>
+    <input type="email" id="loginEmail">
+
+    <label>Password</label>
+    <input type="password" id="loginPassword">
+
+    <div class="modal-actions">
+      <button id="closeLoginModal" class="secondary-btn">Cancel</button>
+      <button id="loginSubmit" class="primary-btn">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Signup Modal ===== -->
+<div class="modal" id="signupModal">
+  <div class="modal-content">
+    <h3>Sign Up</h3>
+
+    <label>Full Name</label>
+    <input type="text" id="signupName">
+
+    <label>Email</label>
+    <input type="email" id="signupEmail">
+
+    <label>Password</label>
+    <input type="password" id="signupPassword">
+
+    <div class="modal-actions">
+      <button id="closeSignupModal" class="secondary-btn">Cancel</button>
+      <button id="signupSubmit" class="primary-btn">Sign Up</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
