@@ -978,8 +978,3 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await updateAuthUI();
 });
-
-document.addEventListener("DOMContentLoaded", async () => {
-  await updateAuthUI();
-  bindAuthUI();
-});
