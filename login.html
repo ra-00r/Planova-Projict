@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planova – Sign In</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span>planova</span>
+    </div>
+
+```
+<div class="auth-title">Welcome Back</div>
+<div class="auth-subtitle">Sign in to manage your academic journey</div>
+
+<div class="auth-tabs">
+  <button class="auth-tab active" data-target="login-section">Sign In</button>
+  <button class="auth-tab" data-target="signup-section">Sign Up</button>
+</div>
+
+<!-- Login Form -->
+<div class="auth-form-section active" id="login-section">
+  <form class="auth-form" id="login-form">
+    <div class="form-group">
+      <label class="form-label" for="login-email">Email Address</label>
+      <input class="form-input" type="email" id="login-email" placeholder="you@example.com" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="login-password">Password</label>
+      <input class="form-input" type="password" id="login-password" placeholder="Your password" required />
+    </div>
+    <div class="auth-error" id="login-error"></div>
+    <button class="btn-primary" type="submit" id="login-btn">Sign In</button>
+  </form>
+</div>
+
+<!-- Signup Form -->
+<div class="auth-form-section" id="signup-section">
+  <form class="auth-form" id="signup-form">
+    <div class="form-group">
+      <label class="form-label" for="signup-name">Full Name</label>
+      <input class="form-input" type="text" id="signup-name" placeholder="Sarah Ahmed" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="signup-email">Email Address</label>
+      <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="signup-password">Password</label>
+      <input class="form-input" type="password" id="signup-password" placeholder="Min. 6 characters" minlength="6" required />
+    </div>
+    <div class="auth-error" id="signup-error"></div>
+    <button class="btn-primary" type="submit" id="signup-btn">Create Account</button>
+  </form>
+</div>
+```
+
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
