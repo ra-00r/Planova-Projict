@@ -1,6 +1,3 @@
-if (!window.supabase) {
-  console.error("Supabase not loaded");
-}
 console.log("script loaded ✅");
 document.getElementById("btnLogin")?.addEventListener("click", () => console.log("Login clicked ✅"));
 "use strict";
@@ -10,7 +7,7 @@ document.getElementById("btnLogin")?.addEventListener("click", () => console.log
 ========================= */
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 /* =========================
    2) Helpers
 ========================= */
@@ -187,36 +184,38 @@ function todayISO() {
 ========================= */
 
 async function updateAuthUI() {
-  const { data, error } = await sb.auth.getUser();
+  const { data } = await sb.auth.getSession();
+  const session = data?.session || null;
 
-  const user = data?.user || null;
+  // Ensure profile row exists (optional but useful)
+  if (session) await ensureProfile(session);
 
+  const name = await getDisplayNameFromSession(session);
+
+  // Common UI targets
   const userNameEl = $("userName");
   const sidebarNameEl = $("sidebarName");
   const welcomeNameEl = $("welcomeName");
   const userEmailEl = $("userEmail");
 
+  if (userNameEl) userNameEl.textContent = name;
+  if (sidebarNameEl) sidebarNameEl.textContent = name;
+  if (welcomeNameEl) welcomeNameEl.textContent = name;
+
+  if (userEmailEl) userEmailEl.textContent = session?.user?.email || "";
+
+  // Toggle auth buttons visibility
   const btnLogin = $("btnLogin");
   const btnSignup = $("btnSignup");
   const btnLogout = $("btnLogout");
 
-  if (user) {
-    const name = user.email.split("@")[0];
+  const isAuthed = !!session;
+  if (btnLogin) btnLogin.style.display = isAuthed ? "none" : "inline-flex";
+  if (btnSignup) btnSignup.style.display = isAuthed ? "none" : "inline-flex";
+  if (btnLogout) btnLogout.style.display = isAuthed ? "inline-flex" : "none";
 
-    if (userNameEl) userNameEl.textContent = name;
-    if (sidebarNameEl) sidebarNameEl.textContent = name;
-    if (welcomeNameEl) welcomeNameEl.textContent = name;
-    if (userEmailEl) userEmailEl.textContent = user.email;
-
-    if (btnLogin) btnLogin.style.display = "none";
-    if (btnSignup) btnSignup.style.display = "none";
-    if (btnLogout) btnLogout.style.display = "inline-block";
-
-  } else {
-    if (btnLogin) btnLogin.style.display = "inline-block";
-    if (btnSignup) btnSignup.style.display = "inline-block";
-    if (btnLogout) btnLogout.style.display = "none";
-  }
+  // If logged in, close modal
+  if (isAuthed) closeAuthModal();
 }
 
 
@@ -928,17 +927,11 @@ async function loadAllForCurrentPage() {
    11) Wire events
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
-
-  bindAuthUI();
-
-  await updateAuthUI();
-  await loadAllForCurrentPage();
-
-  sb.auth.onAuthStateChange(async () => {
-    await updateAuthUI();
+  // Close modals initially
+  ["authModal","taskModal","examModal","planModal","gradeModal"].forEach(id => {
+    if (isEl(id)) closeModal(id);
   });
 
-});
   // Auth (styled modal)
   bindAuthUI();
 
@@ -973,4 +966,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await updateAuthUI();
-});
