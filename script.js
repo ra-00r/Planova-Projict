@@ -10,16 +10,9 @@ document.getElementById("btnLogin")?.addEventListener("click", () => console.log
 ========================= */
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
-const sb = supabase.createClient(
+const sb = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: false
-    }
-  }
+  SUPABASE_KEY
 );
 /* =========================
    2) Helpers
