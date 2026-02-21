@@ -7,9 +7,16 @@ document.getElementById("btnLogin")?.addEventListener("click", () => console.log
 ========================= */
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
-const sb = window.supabase.createClient(
+const sb = supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY
+  SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 /* =========================
    2) Helpers
@@ -970,4 +977,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await updateAuthUI();
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await updateAuthUI();
+  bindAuthUI();
 });
