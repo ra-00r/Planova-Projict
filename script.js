@@ -1,3 +1,5 @@
+console.log("script loaded ✅");
+document.getElementById("btnLogin")?.addEventListener("click", () => console.log("Login clicked ✅"));
 "use strict";
 
 /* =========================
