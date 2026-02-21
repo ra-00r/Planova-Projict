@@ -7,12 +7,13 @@ document.getElementById("btnLogin")?.addEventListener("click", () => console.log
 ========================= */
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 /* =========================
    2) Helpers
 ========================= */
-const $ = (id) => document.getElementById(id);
+function $(id) {
+  return document.getElementById(id);
+}
 
 
 async function fetchProfile(userId) {
@@ -248,19 +249,24 @@ async function doSignup() {
 
 
 async function doLogin() {
-  const email = ($("loginEmail")?.value || "").trim();
-  const pass = $("loginPassword")?.value || "";
+  try {
+    const email = ($("loginEmail")?.value || "").trim();
+    const pass = $("loginPassword")?.value || "";
 
-  if (!email || !pass) return alert("Please enter email + password.");
+    if (!email || !pass) return alert("Please enter email + password.");
 
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) return alert("Login error: " + error.message);
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) return alert("Login error: " + error.message);
 
-  // ensure profile row exists
-  if (data?.session) await ensureProfile(data.session);
+    if (data?.session) await ensureProfile(data.session);
 
-  await updateAuthUI();
-  closeAuthModal();
+    await updateAuthUI();
+    closeAuthModal();
+
+  } catch (e) {
+    alert("Login crashed: " + (e?.message || e));
+    console.error(e);
+  }
 }
 
 async function doLogout() {
