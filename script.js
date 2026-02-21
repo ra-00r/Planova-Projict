@@ -187,38 +187,36 @@ function todayISO() {
 ========================= */
 
 async function updateAuthUI() {
-  const { data } = await sb.auth.getSession();
-  const session = data?.session || null;
+  const { data, error } = await sb.auth.getUser();
 
-  // Ensure profile row exists (optional but useful)
-  if (session) await ensureProfile(session);
+  const user = data?.user || null;
 
-  const name = await getDisplayNameFromSession(session);
-
-  // Common UI targets
   const userNameEl = $("userName");
   const sidebarNameEl = $("sidebarName");
   const welcomeNameEl = $("welcomeName");
   const userEmailEl = $("userEmail");
 
-  if (userNameEl) userNameEl.textContent = name;
-  if (sidebarNameEl) sidebarNameEl.textContent = name;
-  if (welcomeNameEl) welcomeNameEl.textContent = name;
-
-  if (userEmailEl) userEmailEl.textContent = session?.user?.email || "";
-
-  // Toggle auth buttons visibility
   const btnLogin = $("btnLogin");
   const btnSignup = $("btnSignup");
   const btnLogout = $("btnLogout");
 
-  const isAuthed = !!session;
-  if (btnLogin) btnLogin.style.display = isAuthed ? "none" : "inline-flex";
-  if (btnSignup) btnSignup.style.display = isAuthed ? "none" : "inline-flex";
-  if (btnLogout) btnLogout.style.display = isAuthed ? "inline-flex" : "none";
+  if (user) {
+    const name = user.email.split("@")[0];
 
-  // If logged in, close modal
-  if (isAuthed) closeAuthModal();
+    if (userNameEl) userNameEl.textContent = name;
+    if (sidebarNameEl) sidebarNameEl.textContent = name;
+    if (welcomeNameEl) welcomeNameEl.textContent = name;
+    if (userEmailEl) userEmailEl.textContent = user.email;
+
+    if (btnLogin) btnLogin.style.display = "none";
+    if (btnSignup) btnSignup.style.display = "none";
+    if (btnLogout) btnLogout.style.display = "inline-block";
+
+  } else {
+    if (btnLogin) btnLogin.style.display = "inline-block";
+    if (btnSignup) btnSignup.style.display = "inline-block";
+    if (btnLogout) btnLogout.style.display = "none";
+  }
 }
 
 
@@ -930,11 +928,14 @@ async function loadAllForCurrentPage() {
    11) Wire events
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
-  // Close modals initially
-  ["authModal","taskModal","examModal","planModal","gradeModal"].forEach(id => {
-    if (isEl(id)) closeModal(id);
-  });
 
+  const { data } = await sb.auth.getSession();
+
+  if (data?.session) {
+    await updateAuthUI();
+  }
+
+});
   // Auth (styled modal)
   bindAuthUI();
 
