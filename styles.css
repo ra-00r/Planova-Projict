@@ -2,7 +2,7 @@
 PLANOVA - Global Stylesheet
 ============================================= */
 
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap");
+@import url(‘https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap’);
 
 :root {
 –primary: #2563eb;
@@ -14,7 +14,7 @@ PLANOVA - Global Stylesheet
 –navy-light: #334155;
 –sidebar-bg: #0f172a;
 –sidebar-active: #1e3a5f;
-–bg-main: #f0f4f8;
+–bg-main:#f0f4f8;
 –bg-card: #ffffff;
 –bg-card-hover: #f8fafc;
 –text-primary: #0f172a;
@@ -44,7 +44,7 @@ PLANOVA - Global Stylesheet
 html { scroll-behavior: smooth; }
 
 body {
-font-family: "Plus Jakarta Sans", sans-serif;
+font-family: ‘Plus Jakarta Sans’, sans-serif;
 background: var(–bg-main);
 color: var(–text-primary);
 min-height: 100vh;
@@ -71,7 +71,7 @@ overflow: hidden;
 }
 
 .auth-page::before {
-content: "";
+content: ‘’;
 position: absolute;
 width: 600px; height: 600px;
 background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
@@ -80,7 +80,7 @@ border-radius: 50%;
 }
 
 .auth-page::after {
-content: "";
+content: ‘’;
 position: absolute;
 width: 400px; height: 400px;
 background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
@@ -360,9 +360,10 @@ padding: 0 28px;
 position: sticky;
 top: 0;
 z-index: 50;
+gap: 8px;
 }
 
-.topbar-left { }
+.topbar-left { flex: 1; min-width: 0; }
 .topbar-title { font-size: 16px; font-weight: 700; color: var(–text-primary); }
 .topbar-subtitle { font-size: 12px; color: var(–text-secondary); }
 
@@ -429,7 +430,7 @@ overflow: hidden;
 }
 
 .hero-card::before {
-content: "";
+content: ‘’;
 position: absolute;
 width: 300px; height: 300px;
 background: rgba(255,255,255,0.06);
@@ -438,7 +439,7 @@ top: -100px; right: 200px;
 }
 
 .hero-card::after {
-content: "";
+content: ‘’;
 position: absolute;
 width: 200px; height: 200px;
 background: rgba(255,255,255,0.04);
@@ -1020,12 +1021,174 @@ RESPONSIVE
 .grid-2-1 { grid-template-columns: 1fr; }
 }
 
+/* ── Tablet & Mobile ── */
 @media (max-width: 768px) {
-.sidebar { transform: translateX(-100%); }
-.main-content { margin-left: 0; }
-.grid-3, .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
-.page-content { padding: 16px; }
-.hero-card { flex-direction: column; gap: 20px; }
+
+/* Sidebar — hidden off-screen by default */
+.sidebar {
+transform: translateX(-100%);
+transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+z-index: 999;
+}
+
+.sidebar.open {
+transform: translateX(0);
+}
+
+/* Overlay behind sidebar when open */
+.sidebar-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(15,23,42,0.5);
+z-index: 998;
+backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+display: block;
+}
+
+/* Main content takes full width */
+.main-content {
+margin-left: 0 !important;
+width: 100%;
+}
+
+/* Topbar adjustments */
+.topbar {
+padding: 0 16px;
+position: sticky;
+top: 0;
+z-index: 50;
+}
+
+/* Hamburger button — shown on mobile */
+.hamburger-btn {
+display: flex !important;
+}
+
+/* Page content padding */
+.page-content {
+padding: 16px;
+}
+
+/* Hero card stacked */
+.hero-card {
+flex-direction: column;
+align-items: flex-start;
+gap: 20px;
+padding: 24px 20px;
+}
+
+.hero-stat {
+align-self: center;
+width: 110px;
+height: 110px;
+}
+
+.hero-greeting {
+font-size: 22px;
+}
+
+/* All grids → single column */
+.grid-3,
+.grid-2,
+.grid-2-1,
+.grid-1-2 {
+grid-template-columns: 1fr !important;
+}
+
+/* Page header stack */
+.page-header {
+flex-direction: column;
+align-items: flex-start;
+gap: 12px;
+}
+
+/* Auth card full width */
+.auth-card {
+padding: 32px 24px;
+width: 100%;
+border-radius: 16px;
+}
+
+/* Modals full width on mobile */
+.modal {
+width: 100%;
+margin: 0;
+border-radius: 16px 16px 0 0;
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+max-height: 90vh;
+}
+
+.modal-overlay {
+align-items: flex-end;
+padding: 0;
+}
+
+/* Toast position */
+.toast-container {
+bottom: 16px;
+left: 16px;
+right: 16px;
+}
+
+.toast {
+min-width: unset;
+width: 100%;
+}
+}
+
+/* ── Small phones ── */
+@media (max-width: 400px) {
+.hero-badges {
+flex-direction: column;
+gap: 8px;
+}
+
+.filter-tabs {
+width: 100%;
+justify-content: space-between;
+}
+
+.filter-tab {
+flex: 1;
+text-align: center;
+}
+}
+
+/* =============================================
+HAMBURGER BUTTON
+============================================= */
+
+.hamburger-btn {
+display: none; /* hidden on desktop */
+width: 36px;
+height: 36px;
+border-radius: var(–radius-sm);
+border: 1.5px solid var(–border);
+background: white;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: var(–transition);
+color: var(–text-secondary);
+margin-right: 12px;
+flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+border-color: var(–primary);
+color: var(–primary);
+}
+
+.hamburger-btn svg {
+width: 18px;
+height: 18px;
 }
 
 /* =============================================
@@ -1107,7 +1270,7 @@ color: var(–text-secondary);
 }
 
 .ai-suggestion-item:last-child { border-bottom: none; }
-.ai-suggestion-item::before { content: "💡"; font-size: 16px; }
+.ai-suggestion-item::before { content: ‘💡’; font-size: 16px; }
 
 /* =============================================
 FILTERS / TABS
@@ -1148,29 +1311,8 @@ gap: 8px;
 cursor: pointer;
 }
 
-.checkbox-wrap input[type="checkbox"] {
+.checkbox-wrap input[type=“checkbox”] {
 width: 16px; height: 16px;
 accent-color: var(–primary);
 cursor: pointer;
-}
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    transform: translateX(-100%);
-    z-index: 999;
-  }
-
-  .main-content {
-    margin-left: 0 !important;
-    width: 100%;
-  }
-
-  .hero-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .grid-3 {
-    grid-template-columns: 1fr !important;
-  }
 }
