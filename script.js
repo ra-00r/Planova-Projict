@@ -14,7 +14,13 @@ const sb = supabase.createClient(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true
+      detectSessionInUrl: false,
+      storage: window.localStorage
+    },
+    global: {
+      headers: {
+        "X-Client-Info": "planova-web"
+      }
     }
   }
 );
