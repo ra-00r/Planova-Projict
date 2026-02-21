@@ -1,4 +1,7 @@
-console.log("script loaded ✅");
+if (!window.supabase) {
+  console.error("Supabase not loaded");
+}
+onsole.log("script loaded ✅");
 document.getElementById("btnLogin")?.addEventListener("click", () => console.log("Login clicked ✅"));
 "use strict";
 
@@ -14,13 +17,7 @@ const sb = supabase.createClient(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: false,
-      storage: window.localStorage
-    },
-    global: {
-      headers: {
-        "X-Client-Info": "planova-web"
-      }
+      detectSessionInUrl: false
     }
   }
 );
