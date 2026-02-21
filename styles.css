@@ -1153,3 +1153,24 @@ width: 16px; height: 16px;
 accent-color: var(–primary);
 cursor: pointer;
 }
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    z-index: 999;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  .hero-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
