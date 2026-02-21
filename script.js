@@ -1,7 +1,7 @@
 if (!window.supabase) {
   console.error("Supabase not loaded");
 }
-onsole.log("script loaded ✅");
+console.log("script loaded ✅");
 document.getElementById("btnLogin")?.addEventListener("click", () => console.log("Login clicked ✅"));
 "use strict";
 
@@ -10,10 +10,7 @@ document.getElementById("btnLogin")?.addEventListener("click", () => console.log
 ========================= */
 const SUPABASE_URL = "https://qcfnilswrabwtkitbofj.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_v4TO8Lh2upbkp9byJRBgUA_PSarae05";
-const sb = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 /* =========================
    2) Helpers
 ========================= */
@@ -932,11 +929,14 @@ async function loadAllForCurrentPage() {
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const { data } = await sb.auth.getSession();
+  bindAuthUI();
 
-  if (data?.session) {
+  await updateAuthUI();
+  await loadAllForCurrentPage();
+
+  sb.auth.onAuthStateChange(async () => {
     await updateAuthUI();
-  }
+  });
 
 });
   // Auth (styled modal)
