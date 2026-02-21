@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planova - Notifications</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <h2 class="logo">Planova</h2>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="tasks.html">Tasks</a>
+      <a href="exams.html">Exams</a>
+      <a href="study-plan.html">Study Plan</a>
+      <a href="performance.html">Performance</a>
+      <a href="notifications.html" class="active">Notifications</a>
+    </nav>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+
+    <header class="topbar">
+      <h1>Notifications</h1>
+
+      <div class="auth-area">
+        <span id="userName"></span>
+        <button type="button" id="btnLogin">Login</button>
+        <button type="button" id="btnSignup">Sign Up</button>
+        <button type="button" id="btnLogout">Logout</button>
+      </div>
+    </header>
+
+    <!-- ===== Notifications Section ===== -->
+    <section class="card">
+
+      <div class="card-header">
+        <h3>Your Notifications</h3>
+        <button type="button" id="btnClearNotifications" class="secondary-btn">
+          Clear All
+        </button>
+      </div>
+
+      <div id="notificationsContainer"></div>
+
+    </section>
+
+  </main>
+
+</div><!-- AUTH MODAL -->
+  <div id="authModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Account</h3>
+        <button id="authClose" class="close-btn" type="button">&times;</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tabLogin" class="auth-tab active" type="button">Login</button>
+        <button id="tabSignup" class="auth-tab" type="button">Sign Up</button>
+      </div>
+
+      <div id="loginPane">
+        <form id="loginForm" class="form-grid">
+          <label>Email</label>
+          <input id="loginEmail" type="email" placeholder="name@email.com" required />
+          <label>Password</label>
+          <input id="loginPassword" type="password" placeholder="••••••••" required />
+          <div class="modal-actions">
+            <button class="primary-btn" type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="signupPane" hidden>
+        <form id="signupForm" class="form-grid">
+          <label>Full name</label>
+          <input id="signupName" type="text" placeholder="Sarah Ahmed" required />
+          <label>Email</label>
+          <input id="signupEmail" type="email" placeholder="name@email.com" required />
+          <label>Password</label>
+          <input id="signupPassword" type="password" placeholder="••••••••" required />
+          <div class="modal-actions">
+            <button class="primary-btn" type="submit">Create account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+</body>
+</html>
