@@ -974,6 +974,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ✅ أهم شيء: استرجاع الجلسة قبل تحميل أي بيانات/واجهة
   await restoreSessionFromStorage();
 
+  await loadAllForCurrentPage();
+
   bindAuthUI();
   bindCommonModals();
 
