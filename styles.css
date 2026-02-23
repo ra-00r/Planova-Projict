@@ -437,8 +437,8 @@ img{max-width:100%}
 }
 
 .brand-badge{
-  width:56px;
-  height:56px;
+  width:75px;
+  height:75px;
   border-radius:18px;
   display:flex;
   align-items:center;
@@ -474,8 +474,8 @@ img{max-width:100%}
   }
 }
 .brand-badge{
-  width:54px;
-  height:54px;
+  width:75px;
+  height:75px;
   display:flex;
   align-items:center;
   justify-content:center;
