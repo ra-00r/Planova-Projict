@@ -406,3 +406,9 @@ img{max-width:100%}
   .content{grid-template-columns:1fr}
   .grid3{grid-template-columns:1fr}
 }
+.site-logo {
+  width: 130px;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
+}
