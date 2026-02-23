@@ -51,20 +51,7 @@ img{max-width:100%}
   gap:12px;
   padding: 6px 10px 18px 10px;
 }
-.brand-badge{
-  width:36px;height:36px;border-radius:12px;
-  background: linear-gradient(135deg, #7fb4ff, #3f7dff);
-  display:grid;place-items:center;
-  box-shadow: 0 10px 26px rgba(0,0,0,.20);
-}
-.brand-badge:before{
-  content:"";
-  width:14px;height:14px;border-radius:6px;
-  background:rgba(255,255,255,.95);
-  transform: rotate(45deg);
-  clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
-  opacity:.95;
-}
+
 .brand h1{
   font-size:28px;
   margin:0;
@@ -406,52 +393,27 @@ img{max-width:100%}
   .content{grid-template-columns:1fr}
   .grid3{grid-template-columns:1fr}
 }
-.site-logo {
-  width: 80px;
-  height: 80px;
+.site-logo{
+  width: 70px;
+  height: 70px;
   object-fit: contain;
-  display: block;
-
-  border-radius: 18px;
-  padding: 10px;
-
-  background: linear-gradient(
-    145deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.02)
-  );
-
-  border: 1px solid rgba(255,255,255,0.12);
-
-  box-shadow:
-    0 15px 30px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.15);
-
-  backdrop-filter: blur(8px);
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:18px;
+  display:block;
+  padding: 0;           /* مهم */
+  background: none;     /* مهم */
+  border: none;         /* مهم */
+  box-shadow: none;     /* مهم */
+  backdrop-filter: none;/* مهم */
 }
 
 .brand-badge{
-  width:75px;
-  height:75px;
-  border-radius:18px;
+  width: 95px;
+  height: 95px;
+  border-radius: 22px;
   display:flex;
   align-items:center;
   justify-content:center;
   background: rgba(255,255,255,0.06);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
-/* ===== Fix layout (sidebar + content side by side) ===== */
-.layout{
-  display:flex !important;
-  min-height:100vh;
-  gap:24px;
-  align-items:stretch;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25);
 }
 
 .sidebar{
@@ -462,21 +424,14 @@ img{max-width:100%}
   flex:1;
   min-width:0;
 }
-
-/* على الجوال فقط تصير تحت */
 @media (max-width: 900px){
   .layout{
-    flex-direction:column !important;
+    grid-template-columns: 1fr;
+    padding:18px;
   }
   .sidebar{
-    width:100%;
-    flex:0 0 auto;
+    height:auto;
+    position:relative;
+    top:auto;
   }
-}
-.brand-badge{
-  width:75px;
-  height:75px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
