@@ -394,8 +394,8 @@ img{max-width:100%}
   .grid3{grid-template-columns:1fr}
 }
 .site-logo{
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
   display:block;
   padding: 0;           /* مهم */
@@ -406,9 +406,9 @@ img{max-width:100%}
 }
 
 .brand-badge{
-  width: 95px;
-  height: 95px;
-  border-radius: 22px;
+  width: 110px;
+  height: 110px;
+  border-radius: 26px;
   display:flex;
   align-items:center;
   justify-content:center;

@@ -196,7 +196,6 @@ async function getSessionSafe() {
   // 2) If not found, restore from our storage
   if (!session) {
     session = await restoreSessionFromStorage();
-    // re-check to keep sb internal state consistent
     const res = await sb.auth.getSession();
     session = res.data?.session || session || null;
   }
@@ -279,7 +278,6 @@ function bindAuthUI() {
         });
         if (error) throw error;
 
-        // if session exists, save it
         if (data?.session) saveSessionTokens(data.session);
 
         await updateAuthUI();
@@ -291,7 +289,6 @@ function bindAuthUI() {
         });
         if (error) throw error;
 
-        // ✅ ONLY save via our key (no planova_session)
         if (data?.session) saveSessionTokens(data.session);
 
         await updateAuthUI();
@@ -372,6 +369,10 @@ function bindCommonModals() {
     }
     setNotice("perfNotice", "");
     $("perfForm")?.reset();
+
+    // ✅ Ensure perf modal UI matches default scale
+    applyPerfScaleUI();
+
     openOverlay("perfOverlay");
   });
   $("perfClose")?.addEventListener("click", () => closeOverlay("perfOverlay"));
@@ -393,11 +394,9 @@ function bindCommonModals() {
 
 /********************** 6) Data helpers: safe order ************************/
 async function safeOrderQuery(queryBuilder, preferredColumn, fallbackColumn) {
-  // Try preferred order first
   let res = await queryBuilder.order(preferredColumn, { ascending: false });
   if (!res.error) return res;
 
-  // If column doesn't exist, retry with fallback
   const msg = String(res.error?.message || "");
   if (msg.includes(preferredColumn) && fallbackColumn) {
     res = await queryBuilder.order(fallbackColumn, { ascending: false });
@@ -453,8 +452,6 @@ function renderTasks(list) {
 
 async function loadTasks(userId) {
   const base = sb.from("tasks").select("*").eq("user_id", userId);
-
-  // created_at sometimes doesn't exist -> fallback to task_id
   const { data, error } = await safeOrderQuery(base, "created_at", "task_id");
   if (error) throw error;
 
@@ -624,11 +621,8 @@ async function deleteExam(examId) {
 /********************** 8) Data: Study plans ************************/
 async function fetchLatestPlan(userId) {
   const base = sb.from("study_plans").select("*").eq("user_id", userId).limit(1);
-
-  // created_at may not exist -> fallback to plan_id
   const { data, error } = await safeOrderQuery(base, "created_at", "plan_id");
   if (error) throw error;
-
   return (data && data[0]) || null;
 }
 
@@ -679,6 +673,42 @@ async function savePlan(e) {
 /********************** 9) Data: Performance ************************/
 let perfCache = [];
 
+// ✅ Conversions
+function clamp(num, min, max) {
+  const n = Number(num);
+  if (!Number.isFinite(n)) return min;
+  return Math.min(max, Math.max(min, n));
+}
+function gpa5ToPercent(gpa) {
+  return (Number(gpa) / 5) * 100;
+}
+function percentToGpa5(pct) {
+  return (Number(pct) / 100) * 5;
+}
+
+// ✅ Update modal UI based on selected scale
+function applyPerfScaleUI() {
+  const scaleEl = $("perfScale");
+  const gradeEl = $("perfGradeValue");
+  const hintEl = $("perfGradeHint");
+  if (!scaleEl || !gradeEl || !hintEl) return;
+
+  const scale = scaleEl.value || "100";
+  if (scale === "5") {
+    gradeEl.min = "0";
+    gradeEl.max = "5";
+    gradeEl.step = "0.01";
+    gradeEl.placeholder = "4.25";
+    hintEl.textContent = "Enter a value from 0 to 5";
+  } else {
+    gradeEl.min = "0";
+    gradeEl.max = "100";
+    gradeEl.step = "0.01";
+    gradeEl.placeholder = "87";
+    hintEl.textContent = "Enter a value from 0 to 100";
+  }
+}
+
 function renderPerf(list) {
   const wrap = $("perfList");
   const empty = $("perfEmpty");
@@ -692,24 +722,21 @@ function renderPerf(list) {
   if (empty) empty.style.display = "none";
 
   list.forEach((r) => {
+    const pct = Number(r.average_grade || 0);
+    const gpa = r.gpa_5 != null ? Number(r.gpa_5) : percentToGpa5(pct);
+
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
       <div class="left">
         <div class="dot"></div>
         <div>
-          <div class="title">${Number(r.average_grade).toFixed(0)}% grade · ${Number(
-      r.completion_rate_percent
-    ).toFixed(0)}% completion</div>
-          <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${
-      r.updated_at ? fmtShort(r.updated_at) : ""
-    }</div>
+          <div class="title">${pct.toFixed(0)}% grade · ${gpa.toFixed(2)}/5 GPA · ${Number(r.completion_rate_percent || 0).toFixed(0)}% completion</div>
+          <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
         </div>
       </div>
       <div class="actions">
-        <button class="small-btn danger" type="button" data-act="del" data-id="${
-          r.record_id
-        }">Delete</button>
+        <button class="small-btn danger" type="button" data-act="del" data-id="${r.record_id}">Delete</button>
       </div>
     `;
     wrap.appendChild(div);
@@ -724,30 +751,35 @@ function renderPerf(list) {
 }
 
 async function loadPerf(userId) {
-  const { data, error } = await sb
-    .from("performance_records")
-    .select("*")
-    .eq("user_id", userId)
-    .order("updated_at", { ascending: false });
-
+  const base = sb.from("performance_records").select("*").eq("user_id", userId);
+  const { data, error } = await safeOrderQuery(base, "updated_at", "record_id");
   if (error) throw error;
+
   perfCache = data || [];
   renderPerf(perfCache);
 
   if ($("perfCount")) $("perfCount").textContent = String(perfCache.length);
 
   if (perfCache.length) {
-    const avg =
-      perfCache.reduce((s, x) => s + Number(x.average_grade || 0), 0) /
-      perfCache.length;
-    const comp =
-      perfCache.reduce((s, x) => s + Number(x.completion_rate_percent || 0), 0) /
-      perfCache.length;
+    const avgPct =
+      perfCache.reduce((s, x) => s + Number(x.average_grade || 0), 0) / perfCache.length;
 
-    if ($("perfAvg")) $("perfAvg").textContent = avg.toFixed(0) + "%";
+    const avgGpa =
+      perfCache.reduce((s, x) => {
+        const pct = Number(x.average_grade || 0);
+        const gpa = x.gpa_5 != null ? Number(x.gpa_5) : percentToGpa5(pct);
+        return s + gpa;
+      }, 0) / perfCache.length;
+
+    const comp =
+      perfCache.reduce((s, x) => s + Number(x.completion_rate_percent || 0), 0) / perfCache.length;
+
+    if ($("perfAvg")) $("perfAvg").textContent = avgPct.toFixed(0) + "%";
+    if ($("perfGpa")) $("perfGpa").textContent = avgGpa.toFixed(2) + " / 5";
     if ($("perfComp")) $("perfComp").textContent = comp.toFixed(0) + "%";
   } else {
     if ($("perfAvg")) $("perfAvg").textContent = "—";
+    if ($("perfGpa")) $("perfGpa").textContent = "— / 5";
     if ($("perfComp")) $("perfComp").textContent = "—";
   }
 }
@@ -762,12 +794,40 @@ async function savePerf(e) {
 
   try {
     setNotice("perfNotice", "Saving...");
+
+    const scale = $("perfScale")?.value || "100";
+    const rawGrade = Number($("perfGradeValue")?.value || 0);
+    const completion = Number($("perfRate")?.value || 0);
+
+    // Validate completion
+    const completionSafe = clamp(completion, 0, 100);
+
+    let percent = 0;
+    let gpa5 = 0;
+
+    if (scale === "5") {
+      gpa5 = clamp(rawGrade, 0, 5);
+      percent = clamp(gpa5ToPercent(gpa5), 0, 100);
+    } else {
+      percent = clamp(rawGrade, 0, 100);
+      gpa5 = clamp(percentToGpa5(percent), 0, 5);
+    }
+
     const payload = {
       user_id: session.user.id,
-      average_grade: Number($("perfGrade")?.value || 0),
-      completion_rate_percent: Number($("perfRate")?.value || 0),
+
+      // ✅ keep old column for compatibility
+      average_grade: percent,
+
+      // ✅ NEW column (needs to exist in Supabase)
+      gpa_5: gpa5,
+
+      completion_rate_percent: completionSafe,
       notes: $("perfNotes")?.value || "",
       updated_at: new Date().toISOString(),
+
+      // optional: store how user entered
+      grade_scale: scale,
     };
 
     const { error } = await sb.from("performance_records").insert(payload);
@@ -817,9 +877,7 @@ function renderNotifs(list) {
         </div>
       </div>
       <div class="actions">
-        <button class="small-btn danger" type="button" data-act="del" data-id="${
-          n.notification_id
-        }">Delete</button>
+        <button class="small-btn danger" type="button" data-act="del" data-id="${n.notification_id}">Delete</button>
       </div>
     `;
     wrap.appendChild(div);
@@ -835,7 +893,6 @@ function renderNotifs(list) {
 
 async function loadNotifs(userId) {
   const base = sb.from("notifications").select("*").eq("user_id", userId);
-
   const { data, error } = await safeOrderQuery(base, "created_at", "notification_id");
   if (error) throw error;
 
@@ -971,7 +1028,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("btnOpenNotifications")?.addEventListener("click", () => (location.href = "notifications.html"));
   $("btnOpenMail")?.addEventListener("click", () => window.open("mailto:support@planova.app", "_blank"));
 
-  // ✅ أهم شيء: استرجاع الجلسة قبل تحميل أي بيانات/واجهة
+  // ✅ Restore session early
   await restoreSessionFromStorage();
 
   await loadAllForCurrentPage();
@@ -984,6 +1041,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("planForm")?.addEventListener("submit", savePlan);
   $("perfForm")?.addEventListener("submit", savePerf);
   $("notifForm")?.addEventListener("submit", saveNotif);
+
+  // ✅ Performance scale change (only exists on performance page)
+  $("perfScale")?.addEventListener("change", applyPerfScaleUI);
+  applyPerfScaleUI();
 
   $("tasksSearch")?.addEventListener("input", (e) => {
     const q = (e.target.value || "").toLowerCase();

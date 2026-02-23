@@ -9,20 +9,20 @@
 <body data-page="Performance">
   <div class="layout">
     <aside class="sidebar">
-    <div class="brand">
-  <div class="brand-badge">
-    <img src="assets/logo.png" alt="Planova" class="site-logo" />
-  </div>
-  <h1>Planova</h1>
-</div>
+      <div class="brand">
+        <div class="brand-badge">
+          <img src="assets/logo.png" alt="Planova" class="site-logo" />
+        </div>
+        <h1>Planova</h1>
+      </div>
 
       <nav class="nav">
         <a class="" href="index.html"><span class="icon">🏠</span><span>Dashboard</span></a>
-<a class="" href="tasks.html"><span class="icon">✅</span><span>Tasks</span></a>
-<a class="" href="exams.html"><span class="icon">🗓️</span><span>Exams</span></a>
-<a class="" href="study-plan.html"><span class="icon">📚</span><span>Study Plan</span></a>
-<a class="active" href="performance.html"><span class="icon">📈</span><span>Performance</span></a>
-<a class="" href="notifications.html"><span class="icon">🔔</span><span>Notifications</span></a>
+        <a class="" href="tasks.html"><span class="icon">✅</span><span>Tasks</span></a>
+        <a class="" href="exams.html"><span class="icon">🗓️</span><span>Exams</span></a>
+        <a class="" href="study-plan.html"><span class="icon">📚</span><span>Study Plan</span></a>
+        <a class="active" href="performance.html"><span class="icon">📈</span><span>Performance</span></a>
+        <a class="" href="notifications.html"><span class="icon">🔔</span><span>Notifications</span></a>
       </nav>
 
       <div class="profile-mini">
@@ -73,6 +73,7 @@
             <div class="card" style="padding:14px; background:rgba(255,255,255,.80)">
               <div class="sub">Average grade</div>
               <div style="font-size:34px;font-weight:900" id="perfAvg">—</div>
+              <div class="sub" id="perfGpa">— / 5</div>
             </div>
             <div class="card" style="padding:14px; background:rgba(255,255,255,.80)">
               <div class="sub">Completion rate</div>
@@ -89,40 +90,52 @@
         </div>
       </section>
 
-  <!-- Performance Modal -->
-  <div class="modal-overlay" id="perfOverlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="head">
-        <h3>Add Performance Record</h3>
-        <button class="close" id="perfClose" type="button">✕</button>
+      <!-- Performance Modal -->
+      <div class="modal-overlay" id="perfOverlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true">
+          <div class="head">
+            <h3>Add Performance Record</h3>
+            <button class="close" id="perfClose" type="button">✕</button>
+          </div>
+
+          <div class="notice" id="perfNotice"></div>
+
+          <form id="perfForm">
+            <div class="form">
+              <!-- ✅ NEW: choose input scale -->
+              <div class="field">
+                <div class="label">Grade Input Type</div>
+                <select class="input" id="perfScale">
+                  <option value="100">Percentage (0 - 100)</option>
+                  <option value="5">GPA (0 - 5)</option>
+                </select>
+              </div>
+
+              <!-- ✅ NEW: single grade value -->
+              <div class="field">
+                <div class="label">Grade value</div>
+                <input class="input" id="perfGradeValue" type="number" step="0.01" placeholder="87 or 4.25" required />
+                <div class="helper" id="perfGradeHint">Enter a value from 0 to 100</div>
+              </div>
+
+              <div class="field">
+                <div class="label">Completion rate (%)</div>
+                <input class="input" id="perfRate" type="number" min="0" max="100" placeholder="72" required />
+              </div>
+
+              <div class="field">
+                <div class="label">Notes (optional)</div>
+                <input class="input" id="perfNotes" placeholder="e.g., improved in last month" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="perfCancel" type="button">Cancel</button>
+              <button class="btn primary" id="perfSave" type="submit">Save</button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <div class="notice" id="perfNotice"></div>
-
-      <form id="perfForm">
-        <div class="form">
-          <div class="field">
-            <div class="label">Average grade</div>
-            <input class="input" id="perfGrade" type="number" min="0" max="100" placeholder="87" required />
-          </div>
-          <div class="field">
-            <div class="label">Completion rate (%)</div>
-            <input class="input" id="perfRate" type="number" min="0" max="100" placeholder="72" required />
-          </div>
-          <div class="field">
-            <div class="label">Notes (optional)</div>
-            <input class="input" id="perfNotes" placeholder="e.g., improved in last month" />
-          </div>
-          <div></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="perfCancel" type="button">Cancel</button>
-          <button class="btn primary" id="perfSave" type="submit">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
       <!-- PAGE CONTENT END -->
     </main>
