@@ -1032,6 +1032,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSessionFromStorage();
 
   await loadAllForCurrentPage();
+  checkUpcomingDeadlines(userId);
 
   bindAuthUI();
   bindCommonModals();
@@ -1058,3 +1059,106 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadAllForCurrentPage();
 });
+function showPopupNotification(message) {
+  const popup = document.createElement("div");
+
+  popup.style.position = "fixed";
+  popup.style.top = "20px";
+  popup.style.right = "20px";
+  popup.style.background = "#333";
+  popup.style.color = "#fff";
+  popup.style.padding = "12px 18px";
+  popup.style.borderRadius = "8px";
+  popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+  popup.style.zIndex = "9999";
+  popup.style.fontSize = "14px";
+
+  popup.innerText = message;
+
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    popup.remove();
+  }, 5000);
+}
+// Check upcoming deadlines
+async function checkUpcomingDeadlines(userId) {
+
+  const now = new Date();
+
+  // ---- Check Tasks ----
+  const { data: tasks } = await sb
+    .from("tasks")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (tasks) {
+    for (const task of tasks) {
+
+      if (!task.due_date) continue;
+
+      const due = new Date(task.due_date);
+      const diff = due - now;
+      const hours = diff / (1000 * 60 * 60);
+
+      if (hours <= 24 && hours > 0) {
+
+        const { data: existing } = await sb
+          .from("notifications")
+          .select("*")
+          .eq("user_id", userId)
+          .ilike("message", `%${task.title}%`);
+
+        if (!existing || existing.length === 0) {
+
+          await sb.from("notifications").insert({
+            user_id: userId,
+            message: `Reminder: Task "${task.title}" is due soon`,
+            created_at: new Date()
+          });
+
+          showPopupNotification(`Reminder: Task "${task.title}" is due soon`);
+        }
+      }
+    }
+  }
+
+
+  // ---- Check Exams ----
+  const { data: exams } = await sb
+    .from("exams")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (exams) {
+    for (const exam of exams) {
+
+      if (!exam.exam_date) continue;
+
+      const examDate = new Date(exam.exam_date);
+      const diff = examDate - now;
+      const hours = diff / (1000 * 60 * 60);
+
+      if (hours <= 24 && hours > 0) {
+
+        const { data: existing } = await sb
+          .from("notifications")
+          .select("*")
+          .eq("user_id", userId)
+          .ilike("message", `%${exam.title}%`);
+
+        if (!existing || existing.length === 0) {
+
+          await sb.from("notifications").insert({
+            user_id: userId,
+            message: `Reminder: Exam "${exam.title}" is coming soon`,
+            created_at: new Date()
+          });
+
+          showPopupNotification(`Reminder: Exam "${exam.title}" is coming soon`);
+        }
+      }
+    }
+  }
+
+}
