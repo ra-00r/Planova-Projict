@@ -1032,7 +1032,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSessionFromStorage();
 
   await loadAllForCurrentPage();
-  checkUpcomingDeadlines(userId);
+
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+  checkUpcomingDeadlines(user.id);
+ }
 
   bindAuthUI();
   bindCommonModals();
