@@ -1036,8 +1036,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { data: { user } } = await sb.auth.getUser();
   if (user) {
   checkUpcomingDeadlines(user.id);
- }
-
+  setInterval(() => checkUpcomingDeadlines(user.id), 60000);
+   }
   bindAuthUI();
   bindCommonModals();
 
@@ -1090,7 +1090,7 @@ async function checkUpcomingDeadlines(userId) {
 
   const now = new Date();
 
-  // ---- Check Tasks ----
+  // -------- Tasks --------
   const { data: tasks } = await sb
     .from("tasks")
     .select("*")
@@ -1103,32 +1103,27 @@ async function checkUpcomingDeadlines(userId) {
 
       const due = new Date(task.due_date);
       const diff = due - now;
+
       const hours = diff / (1000 * 60 * 60);
 
-      if (hours <= 24 && hours > 0) {
+      // 🔔 قبل 24 ساعة
+      if (hours <= 24 && hours > 0 && !task.is_done) {
 
-        const { data: existing } = await sb
-          .from("notifications")
-          .select("*")
-          .eq("user_id", userId)
-          .ilike("message", `%${task.title}%`);
+        await sb.from("notifications").insert({
+          user_id: userId,
+          title: "Task Reminder",
+          message: `Task "${task.title}" is due tomorrow`,
+          type: "task",
+          is_read: false,
+          created_at: new Date()
+        });
 
-        if (!existing || existing.length === 0) {
-
-          await sb.from("notifications").insert({
-            user_id: userId,
-            message: `Reminder: Task "${task.title}" is due soon`,
-            created_at: new Date()
-          });
-
-          showPopupNotification(`Reminder: Task "${task.title}" is due soon`);
-        }
+        showPopupNotification(`Task "${task.title}" is due tomorrow`);
       }
     }
   }
 
-
-  // ---- Check Exams ----
+  // -------- Exams --------
   const { data: exams } = await sb
     .from("exams")
     .select("*")
@@ -1141,26 +1136,22 @@ async function checkUpcomingDeadlines(userId) {
 
       const examDate = new Date(exam.exam_date);
       const diff = examDate - now;
+
       const hours = diff / (1000 * 60 * 60);
 
+      // 🔔 قبل 24 ساعة
       if (hours <= 24 && hours > 0) {
 
-        const { data: existing } = await sb
-          .from("notifications")
-          .select("*")
-          .eq("user_id", userId)
-          .ilike("message", `%${exam.title}%`);
+        await sb.from("notifications").insert({
+          user_id: userId,
+          title: "Exam Reminder",
+          message: `Exam "${exam.subject}" is tomorrow`,
+          type: "exam",
+          is_read: false,
+          created_at: new Date()
+        });
 
-        if (!existing || existing.length === 0) {
-
-          await sb.from("notifications").insert({
-            user_id: userId,
-            message: `Reminder: Exam "${exam.title}" is coming soon`,
-            created_at: new Date()
-          });
-
-          showPopupNotification(`Reminder: Exam "${exam.title}" is coming soon`);
-        }
+        showPopupNotification(`Exam "${exam.subject}" is tomorrow`);
       }
     }
   }
