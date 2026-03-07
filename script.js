@@ -544,9 +544,11 @@ function renderExams(list) {
         <div class="dot"></div>
         <div>
           <div class="title">${escapeHtml(ex.subject || "")}</div>
-          <div class="meta">Due: ${fmtShort(ex.exam_date)} ${ex.reminder_datetime ? "· Reminder set" : ""}</div>
-        </div>
-      </div>
+          <div class="meta">
+           Due: ${fmtShort(ex.exam_date)}
+           ${ex.reminder_datetime ? " · Reminder set" : ""}
+           ${ex.score != null ? ` · Score: ${ex.score}%` : ""}
+          </div>
       <div class="actions">
         <button class="small-btn danger" type="button" data-act="del" data-id="${ex.exam_id}">Delete</button>
       </div>
@@ -585,6 +587,13 @@ async function saveExam(e) {
 
   try {
     setNotice("examNotice", "Saving...");
+
+    const rawScore = $("examScore")?.value;
+    const score =
+      rawScore !== undefined && rawScore !== null && rawScore !== ""
+        ? Math.max(0, Math.min(100, Number(rawScore)))
+        : null;
+
     const payload = {
       user_id: session.user.id,
       subject: $("examSubject")?.value?.trim(),
@@ -592,7 +601,9 @@ async function saveExam(e) {
       reminder_datetime: $("examReminder")?.value
         ? new Date($("examReminder").value).toISOString()
         : null,
+      score: Number.isFinite(score) ? score : null,
     };
+
     if (!payload.subject || !payload.exam_date) {
       setNotice("examNotice", "Subject and exam date are required.", true);
       return;
@@ -1036,7 +1047,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { data: { user } } = await sb.auth.getUser();
   if (user) {
   checkUpcomingDeadlines(user.id);
-  
+
    }
   bindAuthUI();
   bindCommonModals();
