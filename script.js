@@ -1036,7 +1036,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { data: { user } } = await sb.auth.getUser();
   if (user) {
   checkUpcomingDeadlines(user.id);
-  setInterval(() => checkUpcomingDeadlines(user.id), 60000);
+  
    }
   bindAuthUI();
   bindCommonModals();
@@ -1069,25 +1069,37 @@ function showPopupNotification(message) {
   popup.style.position = "fixed";
   popup.style.top = "20px";
   popup.style.right = "20px";
-  popup.style.background = "#333";
-  popup.style.color = "#fff";
-  popup.style.padding = "12px 18px";
-  popup.style.borderRadius = "8px";
-  popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+  popup.style.background = "#1f2937";
+  popup.style.color = "#ffffff";
+  popup.style.padding = "14px 18px";
+  popup.style.borderRadius = "12px";
+  popup.style.boxShadow = "0 10px 25px rgba(0,0,0,0.18)";
   popup.style.zIndex = "9999";
   popup.style.fontSize = "14px";
+  popup.style.fontWeight = "500";
+  popup.style.maxWidth = "280px";
+  popup.style.lineHeight = "1.5";
+  popup.style.opacity = "0";
+  popup.style.transform = "translateY(-10px)";
+  popup.style.transition = "all 0.3s ease";
 
   popup.innerText = message;
 
   document.body.appendChild(popup);
 
+  requestAnimationFrame(() => {
+    popup.style.opacity = "1";
+    popup.style.transform = "translateY(0)";
+  });
+
   setTimeout(() => {
-    popup.remove();
-  }, 5000);
+    popup.style.opacity = "0";
+    popup.style.transform = "translateY(-10px)";
+    setTimeout(() => popup.remove(), 300);
+  }, 4000);
 }
 // Check upcoming deadlines
 async function checkUpcomingDeadlines(userId) {
-
   const now = new Date();
 
   // -------- Tasks --------
@@ -1098,27 +1110,34 @@ async function checkUpcomingDeadlines(userId) {
 
   if (tasks) {
     for (const task of tasks) {
-
-      if (!task.due_date) continue;
+      if (!task.due_date || task.is_done) continue;
 
       const due = new Date(task.due_date);
       const diff = due - now;
-
       const hours = diff / (1000 * 60 * 60);
 
-      // 🔔 قبل 24 ساعة
-      if (hours <= 24 && hours > 0 && !task.is_done) {
+      if (hours <= 24 && hours > 0) {
+        const message = `Task "${task.title}" is due tomorrow`;
 
-        await sb.from("notifications").insert({
-          user_id: userId,
-          title: "Task Reminder",
-          message: `Task "${task.title}" is due tomorrow`,
-          type: "task",
-          is_read: false,
-          created_at: new Date()
-        });
+        const { data: existingTaskNotif } = await sb
+          .from("notifications")
+          .select("notification_id")
+          .eq("user_id", userId)
+          .eq("message", message)
+          .eq("type", "task");
 
-        showPopupNotification(`Task "${task.title}" is due tomorrow`);
+        if (!existingTaskNotif || existingTaskNotif.length === 0) {
+          await sb.from("notifications").insert({
+            user_id: userId,
+            title: "Task Reminder",
+            message: message,
+            type: "task",
+            is_read: false,
+            created_at: new Date()
+          });
+
+          showPopupNotification(message);
+        }
       }
     }
   }
@@ -1131,29 +1150,35 @@ async function checkUpcomingDeadlines(userId) {
 
   if (exams) {
     for (const exam of exams) {
-
       if (!exam.exam_date) continue;
 
       const examDate = new Date(exam.exam_date);
       const diff = examDate - now;
-
       const hours = diff / (1000 * 60 * 60);
 
-      // 🔔 قبل 24 ساعة
       if (hours <= 24 && hours > 0) {
+        const message = `Exam "${exam.subject}" is tomorrow`;
 
-        await sb.from("notifications").insert({
-          user_id: userId,
-          title: "Exam Reminder",
-          message: `Exam "${exam.subject}" is tomorrow`,
-          type: "exam",
-          is_read: false,
-          created_at: new Date()
-        });
+        const { data: existingExamNotif } = await sb
+          .from("notifications")
+          .select("notification_id")
+          .eq("user_id", userId)
+          .eq("message", message)
+          .eq("type", "exam");
 
-        showPopupNotification(`Exam "${exam.subject}" is tomorrow`);
+        if (!existingExamNotif || existingExamNotif.length === 0) {
+          await sb.from("notifications").insert({
+            user_id: userId,
+            title: "Exam Reminder",
+            message: message,
+            type: "exam",
+            is_read: false,
+            created_at: new Date()
+          });
+
+          showPopupNotification(message);
+        }
       }
     }
   }
-
 }
