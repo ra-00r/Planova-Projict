@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planova - Performance</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body data-page="Performance">
   <div class="layout">
@@ -83,6 +84,12 @@
               <div class="sub">Records</div>
               <div style="font-size:34px;font-weight:900" id="perfCount">0</div>
             </div>
+          </div>
+          <div class="card" style="margin-top:16px; padding:18px; background:rgba(255,255,255,.80)">
+           <div class="sub">Performance Progress</div>
+           <div style="margin-top:14px; height:260px;">
+             <canvas id="performanceChart"></canvas>
+           </div>
           </div>
 
           <div class="list" id="perfList" style="margin-top:14px"></div>

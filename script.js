@@ -488,6 +488,7 @@ async function saveTask(e) {
 
     closeOverlay("taskOverlay");
     await loadTasks(session.user.id);
+    await calculatePerformance(session.user.id);
   } catch (err) {
     setNotice("taskNotice", err?.message || "Failed to save task.", true);
   }
@@ -519,6 +520,7 @@ async function toggleTask(taskId) {
     .eq("user_id", session.user.id);
 
   await loadTasks(session.user.id);
+  await calculatePerformance(session.user.id);
 }
 
 /********************** 7) Data: Exams ************************/
@@ -954,6 +956,95 @@ async function deleteNotif(id) {
   await loadNotifs(session.user.id);
 }
 
+async function calculatePerformance(userId) {
+
+  const { data: tasks } = await sb
+    .from("tasks")
+    .select("*")
+    .eq("user_id", userId);
+
+  const { data: exams } = await sb
+    .from("exams")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (!tasks || !exams) return;
+
+  const totalTasks = tasks.length;
+  const doneTasks = tasks.filter(t => t.is_done).length;
+
+  const taskCompletion =
+    totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
+
+  const examsWithScore = exams.filter(e => e.score != null);
+
+  const examCompletion =
+    exams.length > 0 ? (examsWithScore.length / exams.length) * 100 : 0;
+
+  let avgScore = 0;
+
+  if (examsWithScore.length > 0) {
+    avgScore =
+      examsWithScore.reduce((s, e) => s + Number(e.score || 0), 0) /
+      examsWithScore.length;
+  }
+
+  const overall =
+    (taskCompletion + examCompletion + avgScore) / 3;
+
+  await sb.from("performance_records").insert({
+    user_id: userId,
+    average_grade: avgScore,
+    completion_rate_percent: taskCompletion,
+    notes: "auto record",
+    updated_at: new Date().toISOString()
+  });
+
+}
+async function drawPerformanceChart(userId) {
+
+  const { data } = await sb
+    .from("performance_records")
+    .select("*")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: true });
+
+  if (!data) return;
+
+  const labels = data.map(r =>
+    new Date(r.updated_at).toLocaleDateString()
+  );
+
+  const grades = data.map(r => r.average_grade);
+
+  const completion = data.map(r => r.completion_rate_percent);
+
+  const ctx = document.getElementById("performanceChart");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Average Exam Score",
+          data: grades,
+          borderWidth: 3
+        },
+        {
+          label: "Task Completion",
+          data: completion,
+          borderWidth: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      tension: 0.3
+    }
+  });
+
+}
 /********************** 11) Dashboard Stats ************************/
 function updateDashboardStats() {
   if (pageName() !== "Dashboard") return;
@@ -1026,6 +1117,7 @@ async function loadAllForCurrentPage() {
     await loadPlan(userId);
   } else if (pageName() === "Performance") {
     await loadPerf(userId);
+    await drawPerformanceChart(userId);
   } else if (pageName() === "Notifications") {
     await loadNotifs(userId);
   }
