@@ -1055,14 +1055,10 @@ async function calculatePerformance(userId) {
 
   await sb.from("performance_records").insert({
     user_id: userId,
-    average_grade: lastPerf?.average_grade ?? null,
-    gpa_5: lastPerf?.gpa_5 ?? null,
     completion_rate_percent: taskCompletion,
-    cumulative_gpa: lastPerf?.cumulative_gpa ?? null,
-    cumulative_percent: lastPerf?.cumulative_percent ?? null,
     notes: "auto record",
     updated_at: new Date().toISOString()
-  });
+});
 }
 
 async function drawPerformanceChart(userId) {
