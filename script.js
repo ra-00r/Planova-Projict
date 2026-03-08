@@ -541,19 +541,21 @@ function renderExams(list) {
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
-      <div class="left">
-        <div class="dot"></div>
-        <div>
-          <div class="title">${escapeHtml(ex.subject || "")}</div>
-          <div class="meta">
-           Due: ${fmtShort(ex.exam_date)}
-           ${ex.reminder_datetime ? " · Reminder set" : ""}
-           ${ex.score != null ? ` · Score: ${ex.score}%` : ""}
-          </div>
-      <div class="actions">
-        <button class="small-btn danger" type="button" data-act="del" data-id="${ex.exam_id}">Delete</button>
+  <div class="left">
+    <div class="dot"></div>
+    <div>
+      <div class="title">${escapeHtml(ex.subject || "")}</div>
+      <div class="meta">
+        Due: ${fmtShort(ex.exam_date)}
+        ${ex.reminder_datetime ? " · Reminder set" : ""}
+        ${ex.score != null ? ` · Score: ${ex.score}%` : ""}
       </div>
-    `;
+    </div>
+  </div>
+  <div class="actions">
+    <button class="small-btn danger" type="button" data-act="del" data-id="${ex.exam_id}">Delete</button>
+  </div>
+`;
     wrap.appendChild(div);
   });
 
@@ -727,13 +729,19 @@ function renderPerf(list) {
   if (!wrap) return;
 
   wrap.innerHTML = "";
-  if (!list || list.length === 0) {
+
+  const manualRecords = (list || []).filter(
+    (r) => r.average_grade != null && Number(r.average_grade) > 0
+  );
+
+  if (manualRecords.length === 0) {
     if (empty) empty.style.display = "block";
     return;
   }
+
   if (empty) empty.style.display = "none";
 
-  list.forEach((r) => {
+  manualRecords.forEach((r) => {
     const pct = Number(r.average_grade || 0);
     const gpa = r.gpa_5 != null ? Number(r.gpa_5) : percentToGpa5(pct);
 
@@ -743,8 +751,8 @@ function renderPerf(list) {
       <div class="left">
         <div class="dot"></div>
         <div>
-        <div class="title">Latest Grade: ${pct.toFixed(0)}% · ${gpa.toFixed(2)}/5 GPA</div>
-        <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
+          <div class="title">Latest Grade: ${pct.toFixed(0)}% · ${gpa.toFixed(2)}/5 GPA</div>
+          <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
         </div>
       </div>
       <div class="actions">
@@ -772,9 +780,11 @@ async function loadPerf(userId) {
 
   if ($("perfCount")) $("perfCount").textContent = String(perfCache.length);
 
-  if (perfCache.length) {
-    const latest = perfCache[0];
+  const latest = perfCache.find(
+    (r) => r.average_grade != null && Number(r.average_grade) > 0
+  );
 
+  if (latest) {
     const latestPct = Number(latest.average_grade || 0);
     const latestGpa =
       latest.gpa_5 != null ? Number(latest.gpa_5) : percentToGpa5(latestPct);
@@ -801,68 +811,6 @@ async function loadPerf(userId) {
 }
 
 async function savePerf(e) {
-  e.preventDefault();
-  const session = await updateAuthUI();
-  if (!session) {
-    openAuthModal("login");
-    return;
-  }
-
-  try {
-    setNotice("perfNotice", "Saving...");
-
-    const scale = $("perfScale")?.value || "100";
-    const rawGrade = Number($("perfGradeValue")?.value || 0);
-
-    let percent = 0;
-    let gpa5 = 0;
-
-    if (scale === "5") {
-      gpa5 = clamp(rawGrade, 0, 5);
-      percent = clamp(gpa5ToPercent(gpa5), 0, 100);
-    } else {
-      percent = clamp(rawGrade, 0, 100);
-      gpa5 = clamp(percentToGpa5(percent), 0, 5);
-    }
-
-    const cumulativeGpaRaw = $("perfCumulativeGpa")?.value;
-    const cumulativePercentRaw = $("perfCumulativePercent")?.value;
-
-    const cumulativeGpa =
-      cumulativeGpaRaw !== undefined &&
-      cumulativeGpaRaw !== null &&
-      cumulativeGpaRaw !== ""
-        ? clamp(Number(cumulativeGpaRaw), 0, 5)
-        : null;
-
-    const cumulativePercent =
-      cumulativePercentRaw !== undefined &&
-      cumulativePercentRaw !== null &&
-      cumulativePercentRaw !== ""
-        ? clamp(Number(cumulativePercentRaw), 0, 100)
-        : null;
-
-    const payload = {
-      user_id: session.user.id,
-      average_grade: percent,
-      gpa_5: gpa5,
-      completion_rate_percent: 0,
-      cumulative_gpa: cumulativeGpa,
-      cumulative_percent: cumulativePercent,
-      notes: $("perfNotes")?.value || "",
-      updated_at: new Date().toISOString(),
-      grade_scale: scale,
-    };
-
-    const { error } = await sb.from("performance_records").insert(payload);
-    if (error) throw error;
-
-    closeOverlay("perfOverlay");
-    await loadPerf(session.user.id);
-  } catch (err) {
-    setNotice("perfNotice", err?.message || "Failed to save record.", true);
-  }
-}async function savePerf(e) {
   e.preventDefault();
   const session = await updateAuthUI();
   if (!session) {
@@ -1043,21 +991,12 @@ async function calculatePerformance(userId) {
   const taskCompletion =
     totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
-  // خذ آخر معدل ثابت محفوظ
-  const { data: lastPerf } = await sb
-    .from("performance_records")
-    .select("average_grade, gpa_5, cumulative_gpa, cumulative_percent")
-    .eq("user_id", userId)
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
   await sb.from("performance_records").insert({
     user_id: userId,
     completion_rate_percent: taskCompletion,
     notes: "auto record",
-    updated_at: new Date().toISOString()
-});
+    updated_at: new Date().toISOString(),
+  });
 }
 
 async function drawPerformanceChart(userId) {
@@ -1189,9 +1128,14 @@ async function drawDashboardPerformanceChart(userId) {
     new Date(r.updated_at).toLocaleDateString()
   );
 
-  const grades = data.map(r => Number(r.average_grade || 0));
-  const completion = data.map(r => Number(r.completion_rate_percent || 0));
-
+const grades = data.map(r =>
+  r.average_grade != null && Number(r.average_grade) > 0
+    ? Number(r.average_grade)
+    : null
+);
+const completion = data.map(r =>
+  r.completion_rate_percent != null ? Number(r.completion_rate_percent) : null
+);
   const ctx = document.getElementById("dashboardPerformanceChart");
   if (!ctx) return;
 
