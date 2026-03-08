@@ -744,7 +744,7 @@ function renderPerf(list) {
       <div class="left">
         <div class="dot"></div>
         <div>
-        <div class="title">Average: ${gpa.toFixed(2)}/5 GPA (${pct.toFixed(0)}%)</div>
+        <div class="title">Latest Grade: ${pct.toFixed(0)}% · ${gpa.toFixed(2)}/5 GPA</div>
         <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
         </div>
       </div>
@@ -774,26 +774,30 @@ async function loadPerf(userId) {
   if ($("perfCount")) $("perfCount").textContent = String(perfCache.length);
 
   if (perfCache.length) {
-    const avgPct =
-      perfCache.reduce((s, x) => s + Number(x.average_grade || 0), 0) / perfCache.length;
+    const latest = perfCache[0];
 
-    const avgGpa =
-      perfCache.reduce((s, x) => {
-        const pct = Number(x.average_grade || 0);
-        const gpa = x.gpa_5 != null ? Number(x.gpa_5) : percentToGpa5(pct);
-        return s + gpa;
-      }, 0) / perfCache.length;
+    const latestPct = Number(latest.average_grade || 0);
+    const latestGpa =
+      latest.gpa_5 != null ? Number(latest.gpa_5) : percentToGpa5(latestPct);
 
-    const comp =
-      perfCache.reduce((s, x) => s + Number(x.completion_rate_percent || 0), 0) / perfCache.length;
+    if ($("perfAvg")) $("perfAvg").textContent = latestPct.toFixed(0) + "%";
+    if ($("perfGpa")) $("perfGpa").textContent = latestGpa.toFixed(2) + " / 5";
 
-    if ($("perfAvg")) $("perfAvg").textContent = avgPct.toFixed(0) + "%";
-    if ($("perfGpa")) $("perfGpa").textContent = avgGpa.toFixed(2) + " / 5";
-    if ($("perfComp")) $("perfComp").textContent = comp.toFixed(0) + "%";
+    if ($("perfCumulative")) {
+      if (latest.cumulative_gpa != null || latest.cumulative_percent != null) {
+        const cumGpa =
+          latest.cumulative_gpa != null ? Number(latest.cumulative_gpa).toFixed(2) : "—";
+        const cumPct =
+          latest.cumulative_percent != null ? Number(latest.cumulative_percent).toFixed(0) : "—";
+        $("perfCumulative").textContent = `${cumGpa} / 5 (${cumPct}%)`;
+      } else {
+        $("perfCumulative").textContent = "—";
+      }
+    }
   } else {
     if ($("perfAvg")) $("perfAvg").textContent = "—";
     if ($("perfGpa")) $("perfGpa").textContent = "— / 5";
-    if ($("perfComp")) $("perfComp").textContent = "—";
+    if ($("perfCumulative")) $("perfCumulative").textContent = "—";
   }
 }
 
@@ -810,10 +814,6 @@ async function savePerf(e) {
 
     const scale = $("perfScale")?.value || "100";
     const rawGrade = Number($("perfGradeValue")?.value || 0);
-    const completion = Number($("perfRate")?.value || 0);
-
-    // Validate completion
-    const completionSafe = 0;
 
     let percent = 0;
     let gpa5 = 0;
@@ -826,15 +826,96 @@ async function savePerf(e) {
       gpa5 = clamp(percentToGpa5(percent), 0, 5);
     }
 
-   const payload = {
-     user_id: session.user.id,
-     average_grade: percent,
-     gpa_5: gpa5,
-     completion_rate_percent: 0,
-     notes: $("perfNotes")?.value || "",
-     updated_at: new Date().toISOString(),
-     grade_scale: scale,
-     };
+    const cumulativeGpaRaw = $("perfCumulativeGpa")?.value;
+    const cumulativePercentRaw = $("perfCumulativePercent")?.value;
+
+    const cumulativeGpa =
+      cumulativeGpaRaw !== undefined &&
+      cumulativeGpaRaw !== null &&
+      cumulativeGpaRaw !== ""
+        ? clamp(Number(cumulativeGpaRaw), 0, 5)
+        : null;
+
+    const cumulativePercent =
+      cumulativePercentRaw !== undefined &&
+      cumulativePercentRaw !== null &&
+      cumulativePercentRaw !== ""
+        ? clamp(Number(cumulativePercentRaw), 0, 100)
+        : null;
+
+    const payload = {
+      user_id: session.user.id,
+      average_grade: percent,
+      gpa_5: gpa5,
+      completion_rate_percent: 0,
+      cumulative_gpa: cumulativeGpa,
+      cumulative_percent: cumulativePercent,
+      notes: $("perfNotes")?.value || "",
+      updated_at: new Date().toISOString(),
+      grade_scale: scale,
+    };
+
+    const { error } = await sb.from("performance_records").insert(payload);
+    if (error) throw error;
+
+    closeOverlay("perfOverlay");
+    await loadPerf(session.user.id);
+  } catch (err) {
+    setNotice("perfNotice", err?.message || "Failed to save record.", true);
+  }
+}async function savePerf(e) {
+  e.preventDefault();
+  const session = await updateAuthUI();
+  if (!session) {
+    openAuthModal("login");
+    return;
+  }
+
+  try {
+    setNotice("perfNotice", "Saving...");
+
+    const scale = $("perfScale")?.value || "100";
+    const rawGrade = Number($("perfGradeValue")?.value || 0);
+
+    let percent = 0;
+    let gpa5 = 0;
+
+    if (scale === "5") {
+      gpa5 = clamp(rawGrade, 0, 5);
+      percent = clamp(gpa5ToPercent(gpa5), 0, 100);
+    } else {
+      percent = clamp(rawGrade, 0, 100);
+      gpa5 = clamp(percentToGpa5(percent), 0, 5);
+    }
+
+    const cumulativeGpaRaw = $("perfCumulativeGpa")?.value;
+    const cumulativePercentRaw = $("perfCumulativePercent")?.value;
+
+    const cumulativeGpa =
+      cumulativeGpaRaw !== undefined &&
+      cumulativeGpaRaw !== null &&
+      cumulativeGpaRaw !== ""
+        ? clamp(Number(cumulativeGpaRaw), 0, 5)
+        : null;
+
+    const cumulativePercent =
+      cumulativePercentRaw !== undefined &&
+      cumulativePercentRaw !== null &&
+      cumulativePercentRaw !== ""
+        ? clamp(Number(cumulativePercentRaw), 0, 100)
+        : null;
+
+    const payload = {
+      user_id: session.user.id,
+      average_grade: percent,
+      gpa_5: gpa5,
+      completion_rate_percent: 0,
+      cumulative_gpa: cumulativeGpa,
+      cumulative_percent: cumulativePercent,
+      notes: $("perfNotes")?.value || "",
+      updated_at: new Date().toISOString(),
+      grade_scale: scale,
+    };
 
     const { error } = await sb.from("performance_records").insert(payload);
     if (error) throw error;
