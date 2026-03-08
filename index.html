@@ -95,65 +95,61 @@
       </section>
 
       <section class="content">
-        <div class="card">
-          <div class="toolbar">
-            <div>
-              <div class="card" style="margin-top:16px; padding:18px;">
+  <div class="card">
+    <div class="toolbar">
+      <div>
+        <h2>Pending Tasks</h2>
+        <div class="sub">Your next priorities</div>
+      </div>
+      <button class="small-btn primary" id="btnAddTask" type="button">+ New Task</button>
+    </div>
+    <div class="list" id="tasksList"></div>
+    <div class="helper" id="tasksEmpty">No tasks yet. Add one!</div>
+  </div>
 
-  <div class="toolbar">
-    <div>
-      <h2>Performance Overview</h2>
-      <div class="sub">Tasks completion and exam scores</div>
+  <div class="card">
+    <div class="toolbar">
+      <div>
+        <h2>Upcoming Exams</h2>
+        <div class="sub">Don’t miss deadlines</div>
+      </div>
+      <button class="small-btn primary" id="btnAddExam" type="button">+ New Exam</button>
+    </div>
+    <div class="list" id="examsList"></div>
+    <div class="helper" id="examsEmpty">No exams yet.</div>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <div>
+        <h2>Performance Overview</h2>
+        <div class="sub">Tasks completion and exam scores</div>
+      </div>
+    </div>
+    <div style="height:200px; margin-top:12px;">
+      <canvas id="dashboardPerformanceChart"></canvas>
     </div>
   </div>
 
-  <div style="height:240px; margin-top:12px;">
-    <canvas id="dashboardPerformanceChart"></canvas>
+  <div class="card">
+    <div class="toolbar">
+      <div>
+        <h2>Study Plan</h2>
+        <div class="sub" id="planRange">—</div>
+      </div>
+      <button class="small-btn primary" id="btnEditPlan" type="button">Update</button>
+    </div>
+    <div class="item" style="align-items:flex-start">
+      <div class="left" style="align-items:flex-start">
+        <div class="dot"></div>
+        <div>
+          <div class="title">Today</div>
+          <div class="meta" id="planText">No plan yet.</div>
+        </div>
+      </div>
+    </div>
   </div>
-
-</div>
-              <h2>Pending Tasks</h2>
-              <div class="sub">Your next priorities</div>
-            </div>
-            <button class="small-btn primary" id="btnAddTask" type="button">+ New Task</button>
-          </div>
-          <div class="list" id="tasksList"></div>
-          <div class="helper" id="tasksEmpty">No tasks yet. Add one!</div>
-        </div>
-
-        <div class="card">
-          <div class="toolbar">
-            <div>
-              <h2>Upcoming Exams</h2>
-              <div class="sub">Don’t miss deadlines</div>
-            </div>
-            <button class="small-btn primary" id="btnAddExam" type="button">+ New Exam</button>
-          </div>
-          <div class="list" id="examsList"></div>
-          <div class="helper" id="examsEmpty">No exams yet.</div>
-        </div>
-
-        <div class="card">
-          <div class="toolbar">
-            <div>
-              <h2>Study Plan</h2>
-              <div class="sub" id="planRange">—</div>
-            </div>
-            <button class="small-btn primary" id="btnEditPlan" type="button">Update</button>
-          </div>
-          <div class="item" style="align-items:flex-start">
-            <div class="left" style="align-items:flex-start">
-              <div class="dot"></div>
-              <div>
-                <div class="title">Today</div>
-                <div class="meta" id="planText">No plan yet.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE CONTENT END -->
+</section>      <!-- PAGE CONTENT END -->
     </main>
   </div>
 
