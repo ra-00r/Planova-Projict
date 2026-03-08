@@ -488,7 +488,6 @@ async function saveTask(e) {
 
     closeOverlay("taskOverlay");
     await loadTasks(session.user.id);
-    await calculatePerformance(session.user.id);
   } catch (err) {
     setNotice("taskNotice", err?.message || "Failed to save task.", true);
   }
@@ -1062,20 +1061,54 @@ async function calculatePerformance(userId) {
 }
 
 async function drawPerformanceChart(userId) {
-  const { data } = await sb
+  const { data: perfData } = await sb
     .from("performance_records")
     .select("*")
     .eq("user_id", userId)
     .order("updated_at", { ascending: true });
 
-  if (!data || data.length === 0) return;
+  const { data: exams } = await sb
+    .from("exams")
+    .select("*")
+    .eq("user_id", userId)
+    .order("exam_date", { ascending: true });
 
-  const labels = data.map((r) =>
-    new Date(r.updated_at).toLocaleDateString()
-  );
+  const labels = [];
+  const completionData = [];
+  const examScoreData = [];
 
-  const grades = data.map((r) => Number(r.average_grade || 0));
-  const completion = data.map((r) => Number(r.completion_rate_percent || 0));
+  if (perfData && perfData.length) {
+    perfData.forEach((r) => {
+      labels.push(
+        new Date(r.updated_at).toLocaleString([], {
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
+      completionData.push(
+        r.completion_rate_percent != null
+          ? Number(r.completion_rate_percent)
+          : null
+      );
+      examScoreData.push(null);
+    });
+  }
+
+  if (exams && exams.length) {
+    exams.forEach((ex) => {
+      if (ex.score != null) {
+        labels.push(
+          ex.exam_date
+            ? new Date(ex.exam_date).toLocaleDateString()
+            : "Exam"
+        );
+        completionData.push(null);
+        examScoreData.push(Number(ex.score));
+      }
+    });
+  }
 
   const canvas = document.getElementById("performanceChart");
   if (!canvas) return;
@@ -1092,29 +1125,31 @@ async function drawPerformanceChart(userId) {
       labels,
       datasets: [
         {
-          label: "Average Exam Score",
-          data: grades,
+          label: "Exam Scores",
+          data: examScoreData,
           borderColor: "#5B8DEF",
-          backgroundColor: "rgba(91,141,239,0.12)",
+          backgroundColor: "rgba(91,141,239,0.10)",
           pointBackgroundColor: "#5B8DEF",
           pointBorderColor: "#ffffff",
           pointRadius: 4,
           pointHoverRadius: 5,
           borderWidth: 3,
-          tension: 0.35,
+          tension: 0.25,
+          spanGaps: true,
           fill: false,
         },
         {
           label: "Task Completion",
-          data: completion,
-          borderColor: "#8FAADC",
-          backgroundColor: "rgba(143,170,220,0.12)",
-          pointBackgroundColor: "#8FAADC",
+          data: completionData,
+          borderColor: "#94A3B8",
+          backgroundColor: "rgba(148,163,184,0.10)",
+          pointBackgroundColor: "#94A3B8",
           pointBorderColor: "#ffffff",
           pointRadius: 4,
           pointHoverRadius: 5,
           borderWidth: 3,
-          tension: 0.35,
+          tension: 0.25,
+          spanGaps: true,
           fill: false,
         },
       ],
@@ -1122,53 +1157,24 @@ async function drawPerformanceChart(userId) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: {
-        mode: "index",
-        intersect: false,
-      },
       plugins: {
         legend: {
           position: "top",
-          labels: {
-            boxWidth: 14,
-            color: "#475467",
-            font: {
-              size: 12,
-              weight: "600",
-            },
-          },
-        },
-        tooltip: {
-          backgroundColor: "#1F2937",
-          titleColor: "#fff",
-          bodyColor: "#fff",
-          padding: 10,
-          displayColors: true,
         },
       },
       scales: {
         x: {
-          grid: {
-            display: false,
-          },
-          ticks: {
-            color: "#667085",
-          },
+          grid: { display: false },
         },
         y: {
           min: 0,
           max: 100,
-          ticks: {
-            color: "#667085",
-          },
-          grid: {
-            color: "rgba(15, 23, 42, 0.08)",
-          },
         },
       },
     },
   });
 }
+
 async function drawDashboardPerformanceChart(userId) {
 
   const { data } = await sb
