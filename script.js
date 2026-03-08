@@ -1115,64 +1115,121 @@ async function drawPerformanceChart(userId) {
 }
 
 async function drawDashboardPerformanceChart(userId) {
-
-  const { data } = await sb
+  const { data: perfData } = await sb
     .from("performance_records")
     .select("*")
     .eq("user_id", userId)
     .order("updated_at", { ascending: true });
 
-  if (!data || data.length === 0) return;
+  const { data: exams } = await sb
+    .from("exams")
+    .select("*")
+    .eq("user_id", userId)
+    .order("exam_date", { ascending: true });
 
-  const labels = data.map(r =>
-    new Date(r.updated_at).toLocaleDateString()
-  );
+  const labels = [];
+  const completionData = [];
+  const examScoreData = [];
 
-const grades = data.map(r =>
-  r.average_grade != null && Number(r.average_grade) > 0
-    ? Number(r.average_grade)
-    : null
-);
-const completion = data.map(r =>
-  r.completion_rate_percent != null ? Number(r.completion_rate_percent) : null
-);
-  const ctx = document.getElementById("dashboardPerformanceChart");
-  if (!ctx) return;
+  if (perfData && perfData.length) {
+    perfData.forEach((r) => {
+      labels.push(
+        new Date(r.updated_at).toLocaleString([], {
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
 
-  new Chart(ctx, {
+      completionData.push(
+        r.completion_rate_percent != null
+          ? Number(r.completion_rate_percent)
+          : null
+      );
+
+      examScoreData.push(null);
+    });
+  }
+
+  if (exams && exams.length) {
+    exams.forEach((ex) => {
+      if (ex.score != null) {
+        labels.push(
+          ex.exam_date
+            ? new Date(ex.exam_date).toLocaleDateString()
+            : "Exam"
+        );
+
+        completionData.push(null);
+        examScoreData.push(Number(ex.score));
+      }
+    });
+  }
+
+  const canvas = document.getElementById("dashboardPerformanceChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  if (window.dashboardPerformanceChartInstance) {
+    window.dashboardPerformanceChartInstance.destroy();
+  }
+
+  window.dashboardPerformanceChartInstance = new Chart(ctx, {
     type: "line",
     data: {
-      labels: labels,
+      labels,
       datasets: [
         {
-          label: "Exam Score",
-          data: grades,
+          label: "Exam Scores",
+          data: examScoreData,
           borderColor: "#5B8DEF",
+          backgroundColor: "rgba(91,141,239,0.10)",
+          pointBackgroundColor: "#5B8DEF",
+          pointBorderColor: "#ffffff",
+          pointRadius: 4,
+          pointHoverRadius: 5,
           borderWidth: 3,
-          tension: 0.35,
-          pointRadius: 3
+          tension: 0.25,
+          spanGaps: true,
+          fill: false,
         },
         {
           label: "Task Completion",
-          data: completion,
+          data: completionData,
           borderColor: "#94A3B8",
+          backgroundColor: "rgba(148,163,184,0.10)",
+          pointBackgroundColor: "#94A3B8",
+          pointBorderColor: "#ffffff",
+          pointRadius: 4,
+          pointHoverRadius: 5,
           borderWidth: 3,
-          tension: 0.35,
-          pointRadius: 3
-        }
-      ]
+          tension: 0.25,
+          spanGaps: true,
+          fill: false,
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: "top"
-        }
-      }
-    }
+          position: "top",
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+        },
+        y: {
+          min: 0,
+          max: 100,
+        },
+      },
+    },
   });
-
 }
 /********************** 11) Dashboard Stats ************************/
 function updateDashboardStats() {
