@@ -744,8 +744,8 @@ function renderPerf(list) {
       <div class="left">
         <div class="dot"></div>
         <div>
-          <div class="title">${pct.toFixed(0)}% grade · ${gpa.toFixed(2)}/5 GPA · ${Number(r.completion_rate_percent || 0).toFixed(0)}% completion</div>
-          <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
+        <div class="title">Average: ${gpa.toFixed(2)}/5 GPA (${pct.toFixed(0)}%)</div>
+        <div class="meta">${r.notes ? escapeHtml(r.notes) : "—"} · ${r.updated_at ? fmtShort(r.updated_at) : ""}</div>
         </div>
       </div>
       <div class="actions">
