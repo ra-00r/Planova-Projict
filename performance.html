@@ -76,6 +76,12 @@
     <div class="perf-main-number" id="perfAvg">—</div>
     <div class="sub" id="perfGpa">— / 5</div>
   </div>
+  
+    <div class="card perf-stat-card">
+    <div class="sub">Cumulative GPA</div>
+    <div class="perf-main-number" id="perfCumulative">—</div>
+    <div class="sub">Latest saved cumulative result</div>
+  </div>
 
   <div class="card perf-stat-card">
     <div class="sub">Records</div>
@@ -93,15 +99,8 @@
 
 <div class="list" id="perfList" style="margin-top:14px"></div>
 <div class="helper" id="perfEmpty">No performance records yet.</div>
-<div class="field">
-  <div class="label">Cumulative GPA (optional)</div>
-  <input class="input" id="perfCumulativeGpa" type="number" step="0.01" placeholder="e.g., 4.72" />
-</div>
 
-<div class="field">
-  <div class="label">Cumulative Percentage (optional)</div>
-  <input class="input" id="perfCumulativePercent" type="number" step="0.01" placeholder="e.g., 94" />
-</div>
+     </div>
       </section>
 
       <!-- Performance Modal -->
@@ -131,6 +130,15 @@
                 <input class="input" id="perfGradeValue" type="number" step="0.01" placeholder="87 or 4.25" required />
                 <div class="helper" id="perfGradeHint">Enter a value from 0 to 100</div>
               </div>
+              <div class="field">
+  <div class="label">Cumulative GPA (optional)</div>
+  <input class="input" id="perfCumulativeGpa" type="number" step="0.01" placeholder="e.g., 4.72" />
+</div>
+
+<div class="field">
+  <div class="label">Cumulative Percentage (optional)</div>
+  <input class="input" id="perfCumulativePercent" type="number" step="0.01" placeholder="e.g., 94" />
+</div>
 
               <div class="field">
                 <div class="label">Notes (optional)</div>
