@@ -994,7 +994,116 @@ async function calculatePerformance(userId) {
   });
 
 }
+
 async function drawPerformanceChart(userId) {
+  const { data } = await sb
+    .from("performance_records")
+    .select("*")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: true });
+
+  if (!data || data.length === 0) return;
+
+  const labels = data.map((r) =>
+    new Date(r.updated_at).toLocaleDateString()
+  );
+
+  const grades = data.map((r) => Number(r.average_grade || 0));
+  const completion = data.map((r) => Number(r.completion_rate_percent || 0));
+
+  const canvas = document.getElementById("performanceChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  if (window.performanceChartInstance) {
+    window.performanceChartInstance.destroy();
+  }
+
+  window.performanceChartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Average Exam Score",
+          data: grades,
+          borderColor: "#5B8DEF",
+          backgroundColor: "rgba(91,141,239,0.12)",
+          pointBackgroundColor: "#5B8DEF",
+          pointBorderColor: "#ffffff",
+          pointRadius: 4,
+          pointHoverRadius: 5,
+          borderWidth: 3,
+          tension: 0.35,
+          fill: false,
+        },
+        {
+          label: "Task Completion",
+          data: completion,
+          borderColor: "#8FAADC",
+          backgroundColor: "rgba(143,170,220,0.12)",
+          pointBackgroundColor: "#8FAADC",
+          pointBorderColor: "#ffffff",
+          pointRadius: 4,
+          pointHoverRadius: 5,
+          borderWidth: 3,
+          tension: 0.35,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          position: "top",
+          labels: {
+            boxWidth: 14,
+            color: "#475467",
+            font: {
+              size: 12,
+              weight: "600",
+            },
+          },
+        },
+        tooltip: {
+          backgroundColor: "#1F2937",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          padding: 10,
+          displayColors: true,
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            color: "#667085",
+          },
+        },
+        y: {
+          min: 0,
+          max: 100,
+          ticks: {
+            color: "#667085",
+          },
+          grid: {
+            color: "rgba(15, 23, 42, 0.08)",
+          },
+        },
+      },
+    },
+  });
+}
+async function drawDashboardPerformanceChart(userId) {
 
   const { data } = await sb
     .from("performance_records")
@@ -1002,17 +1111,17 @@ async function drawPerformanceChart(userId) {
     .eq("user_id", userId)
     .order("updated_at", { ascending: true });
 
-  if (!data) return;
+  if (!data || data.length === 0) return;
 
   const labels = data.map(r =>
     new Date(r.updated_at).toLocaleDateString()
   );
 
-  const grades = data.map(r => r.average_grade);
+  const grades = data.map(r => Number(r.average_grade || 0));
+  const completion = data.map(r => Number(r.completion_rate_percent || 0));
 
-  const completion = data.map(r => r.completion_rate_percent);
-
-  const ctx = document.getElementById("performanceChart");
+  const ctx = document.getElementById("dashboardPerformanceChart");
+  if (!ctx) return;
 
   new Chart(ctx, {
     type: "line",
@@ -1020,20 +1129,31 @@ async function drawPerformanceChart(userId) {
       labels: labels,
       datasets: [
         {
-          label: "Average Exam Score",
+          label: "Exam Score",
           data: grades,
-          borderWidth: 3
+          borderColor: "#5B8DEF",
+          borderWidth: 3,
+          tension: 0.35,
+          pointRadius: 3
         },
         {
           label: "Task Completion",
           data: completion,
-          borderWidth: 3
+          borderColor: "#94A3B8",
+          borderWidth: 3,
+          tension: 0.35,
+          pointRadius: 3
         }
       ]
     },
     options: {
       responsive: true,
-      tension: 0.3
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top"
+        }
+      }
     }
   });
 
@@ -1102,6 +1222,7 @@ async function loadAllForCurrentPage() {
     await loadTasks(userId);
     await loadExams(userId);
     await loadPlan(userId);
+    await drawDashboardPerformanceChart(userId);
   } else if (pageName() === "Tasks") {
     await loadTasks(userId);
   } else if (pageName() === "Exams") {

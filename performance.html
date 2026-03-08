@@ -70,31 +70,29 @@
             <button class="small-btn primary" id="btnAddPerf" type="button">+ Add Record</button>
           </div>
 
-          <div class="grid3" style="margin-top:12px">
-            <div class="card" style="padding:14px; background:rgba(255,255,255,.80)">
-              <div class="sub">Average grade</div>
-              <div style="font-size:34px;font-weight:900" id="perfAvg">—</div>
-              <div class="sub" id="perfGpa">— / 5</div>
-            </div>
-            <div class="card" style="padding:14px; background:rgba(255,255,255,.80)">
-              <div class="sub">Completion rate</div>
-              <div style="font-size:34px;font-weight:900" id="perfComp">—</div>
-            </div>
-            <div class="card" style="padding:14px; background:rgba(255,255,255,.80)">
-              <div class="sub">Records</div>
-              <div style="font-size:34px;font-weight:900" id="perfCount">0</div>
-            </div>
-          </div>
-          <div class="card" style="margin-top:16px; padding:18px; background:rgba(255,255,255,.80)">
-           <div class="sub">Performance Progress</div>
-           <div style="margin-top:14px; height:260px;">
-             <canvas id="performanceChart"></canvas>
-           </div>
-          </div>
+          <div class="grid2" style="margin-top:12px">
+  <div class="card perf-stat-card">
+    <div class="sub">Average grade</div>
+    <div class="perf-main-number" id="perfAvg">—</div>
+    <div class="sub" id="perfGpa">— / 5</div>
+  </div>
 
-          <div class="list" id="perfList" style="margin-top:14px"></div>
-          <div class="helper" id="perfEmpty">No performance records yet.</div>
-        </div>
+  <div class="card perf-stat-card">
+    <div class="sub">Records</div>
+    <div class="perf-main-number" id="perfCount">0</div>
+    <div class="sub">Saved performance records</div>
+  </div>
+</div>
+
+<div class="card perf-chart-card">
+  <div class="sub">Performance Progress</div>
+  <div class="perf-chart-wrap">
+    <canvas id="performanceChart"></canvas>
+  </div>
+</div>
+
+<div class="list" id="perfList" style="margin-top:14px"></div>
+<div class="helper" id="perfEmpty">No performance records yet.</div>
       </section>
 
       <!-- Performance Modal -->
@@ -124,7 +122,7 @@
                 <input class="input" id="perfGradeValue" type="number" step="0.01" placeholder="87 or 4.25" required />
                 <div class="helper" id="perfGradeHint">Enter a value from 0 to 100</div>
               </div>
-              
+
               <div class="field">
                 <div class="label">Notes (optional)</div>
                 <input class="input" id="perfNotes" placeholder="e.g., improved in last month" />
