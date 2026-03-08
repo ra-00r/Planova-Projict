@@ -1069,7 +1069,7 @@ async function calculatePerformance(userId) {
   await sb.from("performance_records").insert({
     user_id: userId,
     average_grade: avgScore,
-    completion_rate_percent: 0,
+    completion_rate_percent: taskCompletion,
     notes: "auto record",
     updated_at: new Date().toISOString()
   });
