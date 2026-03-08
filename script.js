@@ -813,7 +813,7 @@ async function savePerf(e) {
     const completion = Number($("perfRate")?.value || 0);
 
     // Validate completion
-    const completionSafe = clamp(completion, 0, 100);
+    const completionSafe = 0;
 
     let percent = 0;
     let gpa5 = 0;
@@ -826,22 +826,15 @@ async function savePerf(e) {
       gpa5 = clamp(percentToGpa5(percent), 0, 5);
     }
 
-    const payload = {
-      user_id: session.user.id,
-
-      // ✅ keep old column for compatibility
-      average_grade: percent,
-
-      // ✅ NEW column (needs to exist in Supabase)
-      gpa_5: gpa5,
-
-      completion_rate_percent: completionSafe,
-      notes: $("perfNotes")?.value || "",
-      updated_at: new Date().toISOString(),
-
-      // optional: store how user entered
-      grade_scale: scale,
-    };
+   const payload = {
+     user_id: session.user.id,
+     average_grade: percent,
+     gpa_5: gpa5,
+     completion_rate_percent: 0,
+     notes: $("perfNotes")?.value || "",
+     updated_at: new Date().toISOString(),
+     grade_scale: scale,
+     };
 
     const { error } = await sb.from("performance_records").insert(payload);
     if (error) throw error;
@@ -995,7 +988,7 @@ async function calculatePerformance(userId) {
   await sb.from("performance_records").insert({
     user_id: userId,
     average_grade: avgScore,
-    completion_rate_percent: taskCompletion,
+    completion_rate_percent: 0,
     notes: "auto record",
     updated_at: new Date().toISOString()
   });
