@@ -1031,49 +1031,38 @@ async function deleteNotif(id) {
 }
 
 async function calculatePerformance(userId) {
-
   const { data: tasks } = await sb
     .from("tasks")
     .select("*")
     .eq("user_id", userId);
 
-  const { data: exams } = await sb
-    .from("exams")
-    .select("*")
-    .eq("user_id", userId);
-
-  if (!tasks || !exams) return;
+  if (!tasks) return;
 
   const totalTasks = tasks.length;
-  const doneTasks = tasks.filter(t => t.is_done).length;
+  const doneTasks = tasks.filter((t) => t.is_done).length;
 
   const taskCompletion =
     totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
-  const examsWithScore = exams.filter(e => e.score != null);
-
-  const examCompletion =
-    exams.length > 0 ? (examsWithScore.length / exams.length) * 100 : 0;
-
-  let avgScore = 0;
-
-  if (examsWithScore.length > 0) {
-    avgScore =
-      examsWithScore.reduce((s, e) => s + Number(e.score || 0), 0) /
-      examsWithScore.length;
-  }
-
-  const overall =
-    (taskCompletion + examCompletion + avgScore) / 3;
+  // خذ آخر معدل ثابت محفوظ
+  const { data: lastPerf } = await sb
+    .from("performance_records")
+    .select("average_grade, gpa_5, cumulative_gpa, cumulative_percent")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   await sb.from("performance_records").insert({
     user_id: userId,
-    average_grade: avgScore,
+    average_grade: lastPerf?.average_grade ?? null,
+    gpa_5: lastPerf?.gpa_5 ?? null,
     completion_rate_percent: taskCompletion,
+    cumulative_gpa: lastPerf?.cumulative_gpa ?? null,
+    cumulative_percent: lastPerf?.cumulative_percent ?? null,
     notes: "auto record",
     updated_at: new Date().toISOString()
   });
-
 }
 
 async function drawPerformanceChart(userId) {
